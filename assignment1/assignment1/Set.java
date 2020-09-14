@@ -12,14 +12,52 @@ public class Set implements SetInterface {
 	Set() {
 		s = new Identifier[MAX_ELEMENTS];
 		index = 0;
-		out = new PrintStream(System.out);
 	}
+	
+	Set(Set src) {
+		s = new Identifier[src.s.length];
+		index = src.index;
+		copySet(s, src.s, index);
+	}
+	
+	public void copySet (Identifier[] dest, Identifier[] src, int amount) {
+		// Need to be tested!
+		
+		for (int i = 0; i < amount; i ++) {
+			dest[i] = src[i];
+		}
+	}
+	
+	
+	/*
+	 * 
+	private Number[] stackArray;
+    private int amountOfElements;
 
-	public void init() {
+    public NumberStack () {
+	stackArray = new Number[INITIAL_AMOUNT_OF_ELEMENTS];
+	amountOfElements = 0;
+    }
+
+    private void copyElements (Number[] dest, Number[] src, int amount) {
+	for (int i = 0; i < amount; i++) {
+	    dest[i] = new Number(src[i]);
+	}
+    }
+
+    public NumberStack (NumberStack src) {
+	stackArray = new Number[src.stackArray.length];
+	amountOfElements = src.amountOfElements;
+	copyElements(stackArray, src.stackArray, amountOfElements);
+    } 
+	 
+	 */
+
+	public void init () {
 		
 	}
 
-	public void delete(Identifier element) {
+	public void delete (Identifier element) {
 		
 	}
 	

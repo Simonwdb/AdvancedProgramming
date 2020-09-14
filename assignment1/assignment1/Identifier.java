@@ -4,22 +4,33 @@ public class Identifier implements IdentifierInterface {
 	
 	StringBuffer sb;
 	
-	Identifier () {
-		sb = new StringBuffer();
+	public Identifier () {
+		init('a');
+	}
+	
+	public Identifier (Identifier src) {
+		init('a');
+		copyIdentifier(sb, src.sb);
 	}
 
+	private void copyIdentifier (StringBuffer dest, StringBuffer src) {
+		for (int i = 0; i < src.length(); i ++) {
+			dest.setCharAt(i, src.charAt(i));
+		}
+	}
+	
 	public void init(char c) {
-//		if (Character.isLetter(c)) {
-//			sb.append(c);
-//		}
+		sb = new StringBuffer();
+		add(c);
+
 	}
 
 	public void add(char element) {
-		
+		sb.append(element);
 	}
 
 	public boolean compareIdentifier(Identifier element) {
-		return sb.equals(element);	// deze vergelijking werkt niet. Moet nog zoeken naar een goede oplossing
+		return sb.toString().equals(element.sb.toString());	
 	}
 
 	public char getChar(int index) {
@@ -29,5 +40,5 @@ public class Identifier implements IdentifierInterface {
 	public int size() {
 		return sb.length();
 	}
-
+	
 }

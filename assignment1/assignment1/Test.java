@@ -20,37 +20,74 @@ public class Test {
 		
 	}
 	
-	boolean isSetWithBracket (StringBuffer s) {
-		if (s.charAt(0) != '{') {
-			out.printf("'{' is missing at the begin\n");
-			return false;
-		}
-		if (s.charAt(s.length() - 1) != '}') {
-			out.printf("'}' is missing at the end\n");
-			return false;
-		}
-		return true;
-	}
-	
-	boolean inputContainsCorrectSet(Scanner input, Set set) {
-		Scanner test = new Scanner(input.nextLine());	// lees de gehele input als 1 lijn wordt '{a b c}
-		StringBuffer s = new StringBuffer(test.nextLine());
-		
-		if (! isSetWithBracket(s)) {
-			return false;
-		}
-
-		s.deleteCharAt(0);
-		s.deleteCharAt(s.length() - 1);	// zorgt voor opschoning zodat StringBuffer 'a b c' wordt
-	
-		set.testAdd(s);
-		
-		return true;
+	char nextChar (Scanner input) {
+		return input.next().charAt(0);
 	}
 	
 	boolean nextCharIs (Scanner in, char c) {
 		return in.hasNext(Pattern.quote(c+""));
 	}
+	
+	boolean nextCharIsDigit (Scanner in) {
+		return in.hasNext("[0-9]");
+	}
+	
+	boolean nextCharIsLetter (Scanner in) {
+		return in.hasNext("[a-zA-Z]");
+	}
+	
+	boolean isCharLetterOrNumber (Scanner in) {
+		return nextCharIsLetter(in) || nextCharIsDigit(in);
+	}
+	
+	boolean inputContainsCorrectSet (Scanner input, Set set) throws Exception {
+		Scanner s = new Scanner(input.nextLine());
+		s.useDelimiter("");
+		
+		if (! nextCharIs(s, '{')) {
+			throw new Exception ("'{' is missing at the beginning.");
+		} else {
+			s.next();
+		}
+		
+		if (! nextCharIsLetter (s)) {
+			throw new Exception ("First identifier doesn't start with a letter.");
+		}
+		
+		Identifier i = new Identifier();
+		
+		while (s.hasNext()) {
+			if (isCharLetterOrNumber (s) ) {
+				i.add(nextChar(s));
+			} else {
+				i.sb.deleteCharAt(0);
+				set.add(i);
+				i = new Identifier();
+				s.next();
+			}
+			
+			// (nextCharIs(s, '}') && s.hasNext() doesn't work, don't know why
+			
+			if (nextCharIs(s, '}') && s.hasNext()) {
+				out.println(s.hasNext());
+				throw new Exception ("'}' is unexpected.");
+			}
+		}
+//		printSet(set);
+	
+		return true;
+	}
+	
+	public void printSet(Set set) {
+		for (int i = 0; i < set.index; i++) {
+			out.printf("%s \n", set.s[i].sb.toString());
+		}
+	}
+	
+	public void printId (Identifier id) {
+		out.println(id.sb.toString());
+	}
+	
 	
     boolean askSet (Scanner input, String question, Set set) {
         do {
@@ -69,20 +106,27 @@ public class Test {
     }
     
     void calculateAndGiveOutput (Set set1, Set set2) {
-    	out.println(set1);
-    	out.println(set2);
+//    	out.println(set1);
+//    	out.println(set2);
     }
+    
+
 	
 	void start() {
 		Set set1 = new Set(),
 			set2 = new Set();
 	
+		try {
+			inputContainsCorrectSet(in, set1);
+		} catch (Exception e) {
+			out.println(e);
+		}
 
-        while (askBothSets(in, set1, set2)) {
-            calculateAndGiveOutput(set1, set2);
-        }
+//
+//        while (askBothSets(in, set1, set2)) {
+//            calculateAndGiveOutput(set1, set2);
+//        }
 		
-
 		
 	}
 
