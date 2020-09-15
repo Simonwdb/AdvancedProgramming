@@ -69,9 +69,9 @@ public class Test {
 			// (nextCharIs(s, '}') && s.hasNext() doesn't work, don't know why
 			
 			if (nextCharIs(s, '}') && s.hasNext()) {
-				out.println(s.hasNext());
 				throw new Exception ("'}' is unexpected.");
 			}
+			
 		}
 //		printSet(set);
 	
