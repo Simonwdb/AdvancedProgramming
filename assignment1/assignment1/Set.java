@@ -4,81 +4,59 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Set implements SetInterface {
-	
+
 	PrintStream out;
 	Identifier[] s;
 	int index;
-	
+
 	Set() {
 		s = new Identifier[MAX_ELEMENTS];
 		index = 0;
 	}
-	
+
 	Set(Set src) {
 		s = new Identifier[src.s.length];
 		index = src.index;
 		copySet(s, src.s, index);
 	}
-	
-	public void copySet (Identifier[] dest, Identifier[] src, int amount) {
+
+	public void copySet(Identifier[] dest, Identifier[] src, int amount) {
 		// Need to be tested!
-		
-		for (int i = 0; i < amount; i ++) {
+
+		for (int i = 0; i < amount; i++) {
 			dest[i] = src[i];
 		}
 	}
-	
-	
-	/*
-	 * 
-	private Number[] stackArray;
-    private int amountOfElements;
 
-    public NumberStack () {
-	stackArray = new Number[INITIAL_AMOUNT_OF_ELEMENTS];
-	amountOfElements = 0;
-    }
+	public void init() {
 
-    private void copyElements (Number[] dest, Number[] src, int amount) {
-	for (int i = 0; i < amount; i++) {
-	    dest[i] = new Number(src[i]);
-	}
-    }
-
-    public NumberStack (NumberStack src) {
-	stackArray = new Number[src.stackArray.length];
-	amountOfElements = src.amountOfElements;
-	copyElements(stackArray, src.stackArray, amountOfElements);
-    } 
-	 
-	 */
-
-	public void init () {
-		
 	}
 
-	public void delete (Identifier element) {
-		
+	public void delete(Identifier element) {
+
 	}
-	
-	public void testAdd (StringBuffer s) throws Exception {
-		// Idee is dat hier een 'schone' StringBuffer bijvoorbeeld " a b c" inkomt, deze vervolgens individueel toe te wijzen aan een Identifier en die toe te voegen aan een set.
+
+	public void testAdd(StringBuffer s) throws Exception {
+		// Idee is dat hier een 'schone' StringBuffer bijvoorbeeld " a b c" inkomt, deze
+		// vervolgens individueel toe te wijzen aan een Identifier en die toe te voegen
+		// aan een set.
 		Scanner test = new Scanner(s.toString());
 		test.useDelimiter(" ");
-		while(test.hasNext()) {
+		while (test.hasNext()) {
 			Identifier i = new Identifier();
-			i.sb.append(test.next());	// deze manier werkt niet, hierdoor komen alle losse identifiers in 1 identifier.
+			i.sb.append(test.next()); // deze manier werkt niet, hierdoor komen alle losse identifiers in 1
+										// identifier.
 
 		}
-		
+
 	}
 
 	public void add(Identifier element) throws Exception {
 		if (index < MAX_ELEMENTS) {
 			s[index] = element;
-			index ++;
+			index++;
 		} else {
-			throw new Exception ("Set can't add element");
+			throw new Exception("Set can't add element");
 		}
 
 	}
@@ -87,7 +65,12 @@ public class Set implements SetInterface {
 		return s[0];
 	}
 
-	public Set difference(Set element1) {
+	public Set difference(Set element1, Set element2) {
+		for (int i = 0; i < element1.index; i++) {
+			for (int j = 0; j < element2.index; j++) {
+				
+			}
+		}
 		return null;
 	}
 
@@ -104,8 +87,8 @@ public class Set implements SetInterface {
 	}
 
 	public boolean containsIdentifier(Identifier element) {
-		for (int i = 0; i <= index; i++) {
-			if (s[i] == element) {
+		for (int i = 0; i < index; i++) {
+			if (s[i].compareIdentifier(element)) {
 				return true;
 			}
 		}
