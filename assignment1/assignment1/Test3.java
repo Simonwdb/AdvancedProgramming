@@ -50,13 +50,17 @@ public class Test3 {
 		boolean endFound = false;
 
 		if (!nextCharIs(in, '{')) {
-			throw new Exception("Set doesn't start with '{'");
+			out.println("Set doesn't start with '{'");
+			return false;
+//            throw new Exception("Set doesn't start with '{'");
 		} else {
 			in.next();
 		}
 
 		if (!nextCharIsLetter(in)) {
-			throw new Exception("First char is not a letter");
+			out.println("First char is not a letter");
+			return false;
+//            throw new Exception("First char is not a letter");
 		}
 
 		while (in.hasNext()) {
@@ -69,38 +73,73 @@ public class Test3 {
 			} else if (nextChar(in) == '}') {
 				endFound = true;
 				addToSet(i, set);
-				if (in.hasNext()) {
-					throw new Exception("Invalid input after '}'");
+				if (in.hasNext() && nextChar(in) == ' ') {
+					in.next();
+					return true;
+				} if (in.hasNext() && nextChar(in) != ' ') {
+					out.println("Invalid input after '}'");
+					return false;
 				}
 			}
 		}
 		if (!endFound) {
-			throw new Exception("Set does not end with '}'");
+			out.println("Set does not end with '}'");
+			return false;
 		}
-		System.out.println("final set:");
-		printSet(set);
 		return true;
 	}
 
 	void printSet(Set set) {
-		for (int i = 0; i < set.index; i++) {
+		out.print('{');
+		for (int i = 0; i < set.index - 1; i++) {
 			out.printf("%s ", set.s[i].sb.toString());
 		}
+		out.print(set.s[set.index - 1].sb.toString() + '}');
+		out.println();
 	}
 
 	void printId(Identifier i) {
 		out.println(i.sb.toString());
 	}
 
-	void start() {
-		out.printf("Give input : ");
+	boolean askSet(Scanner input, String question, Set set) throws Exception {
+		do {
+			out.printf("%s", question);
+			if (!input.hasNextLine()) {
+				out.printf("\n"); // otherwise line with ^D will be overwritten
+				return false;
+			}
+		} while (!isCorrect(input, set));
+		return true;
+	}
 
-		Set set = new Set();
+	boolean askBothSets(Scanner input, Set set1, Set set2) throws Exception {
+		return askSet(input, "Give first set : ", set1) && askSet(input, "Give second set : ", set2);
+	}
+
+	void calculateAndGiveOutput(Set set1, Set set2) throws Exception {
+		Set difference = set2.difference(set1);
+		Set intersection = set2.intersection(set1);
+		Set union = set2.union(set1);
+		Set symDiff = set1.symmetricDifference(set2);
+		out.print("difference = ");
+		printSet(difference);
+		out.print("intersection = ");
+		printSet(intersection);
+		out.print("union = ");
+		printSet(union);
+		out.print("sym. diff. = ");
+		printSet(symDiff);
+	}
+
+	void start() {
 
 		try {
-			isCorrect(in, set);
+			Set set1 = new Set(), set2 = new Set();
+			while (askBothSets(in, set1, set2)) {
+				calculateAndGiveOutput(set1, set2);
+			}
 		} catch (Exception e) {
-			out.println();
 			out.println(e);
 		}
 

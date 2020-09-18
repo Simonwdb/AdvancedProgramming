@@ -36,21 +36,6 @@ public class Set implements SetInterface {
 
 	}
 
-	public void testAdd(StringBuffer s) throws Exception {
-		// Idee is dat hier een 'schone' StringBuffer bijvoorbeeld " a b c" inkomt, deze
-		// vervolgens individueel toe te wijzen aan een Identifier en die toe te voegen
-		// aan een set.
-		Scanner test = new Scanner(s.toString());
-		test.useDelimiter(" ");
-		while (test.hasNext()) {
-			Identifier i = new Identifier();
-			i.sb.append(test.next()); // deze manier werkt niet, hierdoor komen alle losse identifiers in 1
-										// identifier.
-
-		}
-
-	}
-
 	public void add(Identifier element) throws Exception {
 		if (index < MAX_ELEMENTS) {
 			s[index] = element;
@@ -65,25 +50,61 @@ public class Set implements SetInterface {
 		return s[0];
 	}
 
-	public Set difference(Set element1, Set element2) {
+	// set1 = ['a1', 'b', 'c']
+	// set2 = ['d', 'e', 'b']
+
+	// set3 = ['a1', 'c'] (difference) elements that contain in set1 but not in set2
+	// set3 = ['b'] (intersection) elements that contain in both sets
+	// set3 = ['a1', 'b', 'c', 'd', 'e'] (union) all elements, but not the
+	// duplicates
+	// set3 = ['a1', 'c', 'd', 'e'] (symDiff) all elements in both sets, except the
+	// intersection
+
+	public Set difference(Set element1) throws Exception {
+		Set set3 = new Set();
 		for (int i = 0; i < element1.index; i++) {
-			for (int j = 0; j < element2.index; j++) {
-				
+			if (!containsIdentifier(element1.s[i])) {
+				set3.add(element1.s[i]);
 			}
 		}
-		return null;
+		return set3;
 	}
 
-	public Set intersection(Set element1) {
-		return null;
+	public Set intersection(Set element1) throws Exception {
+		Set set3 = new Set();
+		for (int i = 0; i < element1.index; i++) {
+			if (containsIdentifier(element1.s[i])) {
+				set3.add(element1.s[i]);
+			}
+		}
+		return set3;
 	}
 
 	public Set union(Set element1) throws Exception {
-		return null;
+		Set set3 = new Set();
+		for (int i = 0; i < element1.index; i++) {
+			if (!containsIdentifier(element1.s[i])) {
+				set3.add(element1.s[i]);
+			}
+		}
+		for (int i = 0; i < index; i++) {
+			set3.add(s[i]);
+		}
+
+		return set3;
 	}
 
 	public Set symmetricDifference(Set element1) throws Exception {
-		return null;
+		Set set3 = new Set(element1);
+		Set set4 = new Set();
+		for (int i = 0; i < index; i++) {
+			set4.add(s[i]);
+		}
+		Set diff1 = set4.difference(set3);
+		Set diff2 = set3.difference(set4);
+		Set symDiff = diff1.union(diff2);
+
+		return symDiff;
 	}
 
 	public boolean containsIdentifier(Identifier element) {
