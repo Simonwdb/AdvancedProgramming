@@ -5,10 +5,12 @@ import java.io.PrintStream;
 public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	Node current;
+	Node head;
 	PrintStream out;
 
 	public LinkedList() {
 		current = null;
+		head = null;
 		out = new PrintStream(System.out);
 	}
 
@@ -45,25 +47,39 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		// if tested manually there are no problems, but with the JUnit test problems
 		// occur.
 		if (isEmpty()) {
-			return 0;
-		} else if (current.next == null) {
-			return 1;
-		}
-		goToNext();
-		return 1 + size();
+			return 0;}
+//		} else if (current.next == null) {
+//			return 1;
+//		}
+//		goToNext();
+//		return 1 + size();
+		return 0;
 	}
+	
 
 	@Override
 	public ListInterface<E> insert(E d) {
-		// Do we need to sort the inserted d in this method or is that already been
-		// done?
-		// Need to be done over, size can't be calculated.
 		Node n = new Node(d);
-		n.next = null;
-		n.prior = current;
-
-		if (current != null) {
-			current.next = n;
+		if (isEmpty()) {
+			head = n;
+		} else if (n.data.compareTo(head.data) < 0) { // insert at the start, n < current
+			n.next = head;
+			n.next.prior = n;
+			head = n;
+		} else {
+			current = head;
+			while (current.next != null && n.data.compareTo(current.next.data) > 0) {
+				current = current.next;
+			}
+			n.prior = current;
+			if (current.next != null) { // insert in between, 
+				n.next = current.next;
+				current.next = current.next.prior = n;
+				n.prior = current;
+			} else { // insert at the end
+				current.next = n;
+				n.prior = current;
+			}
 		}
 		current = n;
 		return this;
@@ -82,7 +98,6 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		if (isEmpty()) {
 			return null;
 		} else if (current.prior == null && current.next == null) {
-			out.println("Komt binnen");
 			current = null;
 		} else if (current.next == null) {
 			current.prior.next = current.next; // do we need to say this or can be said = null?
@@ -148,6 +163,8 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	@Override
 	public ListInterface<E> copy() {
+		ListInterface<E> listCopy = new LinkedList<E>();
+
 		return this;
 	}
 }
