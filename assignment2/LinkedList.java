@@ -44,18 +44,17 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	@Override
 	public int size() {
-		// if tested manually there are no problems, but with the JUnit test problems
-		// occur.
+		// will work once, after that the head is not at the right place.
+		// head-POST will point to null 
 		if (isEmpty()) {
-			return 0;}
-//		} else if (current.next == null) {
-//			return 1;
-//		}
-//		goToNext();
-//		return 1 + size();
-		return 0;
+			return 0;
+		}
+		if (head == null) {
+			return 0;
+		}
+		head = head.next;
+		return 1 + size();
 	}
-	
 
 	@Override
 	public ListInterface<E> insert(E d) {
@@ -72,7 +71,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 				current = current.next;
 			}
 			n.prior = current;
-			if (current.next != null) { // insert in between, 
+			if (current.next != null) { // insert in between,
 				n.next = current.next;
 				current.next = current.next.prior = n;
 				n.prior = current;
@@ -87,10 +86,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	@Override
 	public E retrieve() {
-		if (isEmpty()) {
-			return null;
-		}
-		return current.data;
+		return isEmpty() ? null : current.data;
 	}
 
 	@Override
@@ -98,14 +94,18 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		if (isEmpty()) {
 			return null;
 		} else if (current.prior == null && current.next == null) {
+			// remove if list-POST is empty
 			current = null;
 		} else if (current.next == null) {
-			current.prior.next = current.next; // do we need to say this or can be said = null?
+			// remove if current-PRE is last element of list-PRE
+			current.prior.next = null;
 			goToPrevious();
 		} else if (current.prior == null) {
-			current.next.prior = current.prior; // same as above
+			// remove if current-PRE is first element of list-PRE
+			current.next.prior = null; 
 			goToNext();
 		} else {
+			// remove if current-PRE is "in the middle" of list-PRE
 			current.prior.next = current.next;
 			current.next.prior = current.prior;
 			goToNext();
@@ -163,7 +163,6 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	@Override
 	public ListInterface<E> copy() {
-		ListInterface<E> listCopy = new LinkedList<E>();
 
 		return this;
 	}
