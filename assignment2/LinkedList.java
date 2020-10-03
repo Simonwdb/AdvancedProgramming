@@ -6,16 +6,17 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	Node current;
 	Node head;
+	private int numberOfElements;
 	PrintStream out;
 
 	public LinkedList() {
-		current = null;
-		head = null;
+		this.current = null;
+		this.head = null;
+		this.numberOfElements = 0;
 		out = new PrintStream(System.out);
 	}
 
-	// change back to private!!
-	public class Node {
+	private class Node {
 
 		E data;
 		Node prior, next;
@@ -31,6 +32,14 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		}
 	}
 
+	private void increaseSize() {
+		numberOfElements++;
+	}
+
+	private void decreaseSize() {
+		numberOfElements--;
+	}
+
 	@Override
 	public boolean isEmpty() {
 		return current == null;
@@ -39,21 +48,13 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	@Override
 	public ListInterface<E> init() {
 		current = null;
+		numberOfElements = 0;
 		return this;
 	}
 
 	@Override
 	public int size() {
-		// will work once, after that the head is not at the right place.
-		// head-POST will point to null 
-		if (isEmpty()) {
-			return 0;
-		}
-		if (head == null) {
-			return 0;
-		}
-		head = head.next;
-		return 1 + size();
+		return numberOfElements;
 	}
 
 	@Override
@@ -80,6 +81,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 				n.prior = current;
 			}
 		}
+		increaseSize();
 		current = n;
 		return this;
 	}
@@ -102,7 +104,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 			goToPrevious();
 		} else if (current.prior == null) {
 			// remove if current-PRE is first element of list-PRE
-			current.next.prior = null; 
+			current.next.prior = null;
 			goToNext();
 		} else {
 			// remove if current-PRE is "in the middle" of list-PRE
@@ -110,6 +112,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 			current.next.prior = current.prior;
 			goToNext();
 		}
+		decreaseSize();
 		return this;
 	}
 
@@ -118,7 +121,19 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		if (isEmpty()) {
 			return false;
 		}
-		return current.data == d || find(current.next.data);
+		goToFirst();
+		if (current.data.compareTo(d) == 0) {
+			return true;
+		} else if (current.data.compareTo(d) > 0) {
+			return false;
+		}
+		while (current.next != null && current.next.data.compareTo(d) <= 0) {
+			current = current.next;
+		}
+		if (current.data.compareTo(d) == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -163,7 +178,17 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	@Override
 	public ListInterface<E> copy() {
-
-		return this;
+		// new empty list
+		ListInterface<E> copyList = new LinkedList<E>();
+		goToFirst();
+		
+		
+		while (current.next != null) {
+			copyList.insert(retrieve());
+			goToNext();
+		}
+		copyList.insert(retrieve());
+		
+		return copyList;
 	}
 }
