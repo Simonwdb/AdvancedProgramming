@@ -62,28 +62,50 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		Node n = new Node(d);
 		if (isEmpty()) {
 			head = n;
-		} else if (n.data.compareTo(head.data) < 0) { // insert at the start, n < current
-			n.next = head;
-			n.next.prior = n;
-			head = n;
-		} else {
-			current = head;
-			while (current.next != null && n.data.compareTo(current.next.data) > 0) {
-				current = current.next;
-			}
-			n.prior = current;
-			if (current.next != null) { // insert in between,
-				n.next = current.next;
-				current.next = current.next.prior = n;
-				n.prior = current;
-			} else { // insert at the end
-				current.next = n;
-				n.prior = current;
-			}
+		} else if (head.data.compareTo(n.data) >= 0) { // insert at the start, n <= current
+			insertAtFront(n);
+		} else if (current.next == null && current.data.compareTo(n.data) <= 0) { // insert at the end
+			insertAtBack(n);
+		} else if (current.data.compareTo(n.data) >= 0) {
+			insertAtLeft(n);
+		} else if (current.next != null && current.data.compareTo(n.data) < 0) {
+			insertAtRight(n);
 		}
-		increaseSize();
+		numberOfElements++;
 		current = n;
 		return this;
+	}
+
+	private void insertAtFront(Node n) {
+		n.next = head;
+		head = n.next.prior = n;
+	}
+
+	private void insertAtBack(Node n) {
+		current.next = n;
+		n.prior = current;
+	}
+
+	private void insertAtLeft(Node n) {
+		while (current.prior.data.compareTo(n.data) > 0) {
+			current = current.prior;
+		}
+		n.prior = current.prior;
+		current.prior = current.prior.next = n;
+		n.next = current;
+	}
+
+	private void insertAtRight(Node n) {
+		while (current.next != null && n.data.compareTo(current.next.data) > 0) {
+			current = current.next;
+		}
+		if (current.next == null) {
+			insertAtBack(n);
+		} else {
+			n.next = current.next;
+			current.next = current.next.prior = n;
+			n.prior = current;
+		}
 	}
 
 	@Override
@@ -141,9 +163,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		if (isEmpty()) {
 			return false;
 		}
-		while (current.prior != null) {
-			current = current.prior;
-		}
+		current = head;
 		return true;
 	}
 
