@@ -57,7 +57,8 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	}
 	
 	private void printSet() {
-		// In doubt if implemented here of in the Set class.
+		// Idea is to implement the printSet() to the Set class. 
+		// so that the Set-object can call the printSet().
 	}
 	
 	private void statement (Scanner input) throws APException {
@@ -113,6 +114,10 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	}
 	
 //	term = factor {multiplicative_operator factor}	still needs to be created
+	
+	T factor (Scanner input) throws APException {
+		return null;
+	}
 	
 	private T getIdentifier (Scanner input) {
 		// still need to write this method
@@ -179,6 +184,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	SetInterface<T> multiplicative_operator (Scanner input) throws APException {
 		character(input, '*');
 		SetInterface<T> set = new Set<T>;
+		// how can we perform the operation?
 //		result.intersection();
 		return set;
 	}
