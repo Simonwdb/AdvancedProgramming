@@ -1,19 +1,18 @@
 package nl.vu.labs.phoenix.ap;
 
-import java.io.PrintStream;
 
 public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
-	Node current;
-	Node head;
+	private Node current;
+	private Node head;
+	private Node tail;
 	private int numberOfElements;
-	PrintStream out;
 
 	public LinkedList() {
 		this.current = null;
 		this.head = null;
+		this.tail = null;
 		this.numberOfElements = 0;
-		out = new PrintStream(System.out);
 	}
 
 	private class Node {
@@ -48,6 +47,8 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	@Override
 	public ListInterface<E> init() {
 		current = null;
+		head = null;
+		tail = null;
 		numberOfElements = 0;
 		return this;
 	}
@@ -61,7 +62,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	public ListInterface<E> insert(E d) {
 		Node n = new Node(d);
 		if (isEmpty()) {
-			head = n;
+			head = tail = n;
 		} else if (head.data.compareTo(n.data) >= 0) { // insert at the start, n <= current
 			insertAtFront(n);
 		} else if (current.next == null && current.data.compareTo(n.data) <= 0) { // insert at the end
@@ -71,7 +72,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		} else if (current.next != null && current.data.compareTo(n.data) < 0) {
 			insertAtRight(n);
 		}
-		numberOfElements++;
+		increaseSize();
 		current = n;
 		return this;
 	}
@@ -82,7 +83,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	}
 
 	private void insertAtBack(Node n) {
-		current.next = n;
+		tail = current.next = n;
 		n.prior = current;
 	}
 
@@ -172,9 +173,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		if (isEmpty()) {
 			return false;
 		}
-		while (current.next != null) {
-			current = current.next;
-		}
+		current = tail;
 		return true;
 	}
 
@@ -201,7 +200,6 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		// new empty list
 		ListInterface<E> copyList = new LinkedList<E>();
 		goToFirst();
-		
 		
 		while (current.next != null) {
 			copyList.insert(retrieve());
