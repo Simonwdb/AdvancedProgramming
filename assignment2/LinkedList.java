@@ -1,6 +1,5 @@
 package nl.vu.labs.phoenix.ap;
 
-
 public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	private Node current;
@@ -65,7 +64,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 			head = tail = n;
 		} else if (head.data.compareTo(n.data) >= 0) { // insert at the start, n <= current
 			insertAtFront(n);
-		} else if (current.next == null && current.data.compareTo(n.data) <= 0) { // insert at the end
+		} else if (current.next == null && tail.data.compareTo(n.data) <= 0) { // insert at the end
 			insertAtBack(n);
 		} else if (current.data.compareTo(n.data) >= 0) {
 			insertAtLeft(n);
@@ -139,23 +138,43 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		return this;
 	}
 
+	private boolean findLeft(E d) {
+		while(current.prior != null && current.data.compareTo(d) >= 0){
+			current = current.prior;
+			if (current.data.compareTo(d) == 0 && current.prior.data.compareTo(d)!= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean findRight(E d) {
+		while(current.next != null && current.data.compareTo(d) < 0 ) {
+			current = current.next;
+			if (current.data.compareTo(d) == 0) {
+				return true;
+			} else {
+				
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public boolean find(E d) {
 		if (isEmpty()) {
 			return false;
 		}
-		goToFirst();
 		if (current.data.compareTo(d) == 0) {
 			return true;
 		} else if (current.data.compareTo(d) > 0) {
-			return false;
+			System.out.println("left");
+			findLeft(d);
+		} else {
+			System.out.println("right");
+			findRight(d);
 		}
-		while (current.next != null && current.next.data.compareTo(d) <= 0) {
-			current = current.next;
-		}
-		if (current.data.compareTo(d) == 0) {
-			return true;
-		}
+		
 		return false;
 	}
 
@@ -200,13 +219,13 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		// new empty list
 		ListInterface<E> copyList = new LinkedList<E>();
 		goToFirst();
-		
+
 		while (current.next != null) {
 			copyList.insert(retrieve());
 			goToNext();
 		}
 		copyList.insert(retrieve());
-		
+
 		return copyList;
 	}
 }
