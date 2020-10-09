@@ -2,6 +2,7 @@ package nl.vu.labs.phoenix.ap;
 
 import java.io.PrintStream;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -12,9 +13,11 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	// just for testing
 	PrintStream out;
+	HashMap<Identifier, T> list;
 	
 	public Interpreter() {
 		out = new PrintStream(System.out);
+		list = new HashMap<Identifier, T>();
 	}
 	
 	private char nextChar(Scanner input) {
