@@ -14,12 +14,12 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	// just for testing
 	PrintStream out;
 	HashMap<Identifier, T> list;
-	
+
 	public Interpreter() {
 		out = new PrintStream(System.out);
 		list = new HashMap<Identifier, T>();
 	}
-	
+
 	private char nextChar(Scanner input) {
 		return input.next().charAt(0);
 	}
@@ -31,7 +31,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	private boolean nextCharIsDigit(Scanner in) {
 		return in.hasNext("[0-9]");
 	}
-	
+
 	private boolean nextCharIsNotZero(Scanner in) {
 		return in.hasNext("[1-9]");
 	}
@@ -39,7 +39,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	private boolean nextCharIsLetter(Scanner in) {
 		return in.hasNext("[a-zA-Z]");
 	}
-	
+
 	private boolean nextCharIsWhiteSpace(Scanner in) {
 		return in.hasNext(" ");
 	}
@@ -47,7 +47,25 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	private boolean nextCharIsLetterOrNumber(Scanner in) {
 		return nextCharIsDigit(in) && nextCharIsLetter(in);
 	}
+
+	private boolean skipWhiteSpace(Scanner in) {
+		while (nextCharIsWhiteSpace(in)) {
+			nextChar(in);
+		}
+		return true;
+	}
 	
+	private boolean nextCharIsAdditive(Scanner in) {
+		if (nextCharIs(in, '+')) {
+			return true;
+		} else if (nextCharIs(in, '|')) {
+			return true;
+		} else if (nextCharIs(in, '-')) {
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public T getMemory(String v) {
 		// TODO Implement me
@@ -59,16 +77,17 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		// TODO Implement me
 		return null;
 	}
-	
-	private void printSet() {
-		// Idea is to implement the printSet() to the Set class. 
-		// so that the Set-object can call the printSet().
-	}
-	
-	private void statement (Scanner input) throws APException {
+
+	private void statement(Scanner input) throws APException {
+		skipWhiteSpace(input);
+		Identifier id = new Identifier();
+		if (nextCharIsLetter(input)) {
+			id = identifier(input);
+		}
+		skipWhiteSpace(input);
 		
 		if (nextCharIs(input, '=')) {
-			assignment(input);
+			assignment(input, id);
 		} else if (nextCharIs(input, '?')) {
 			print_statement(input);
 		} else if (nextCharIs(input, '/')) {
@@ -77,32 +96,33 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			throw new APException("...");
 		}
 	}
-	
-	T assignment (Scanner input) throws APException {
+
+	private void assignment(Scanner input, Identifier id) throws APException {
+		skipWhiteSpace(input);
+		character(input, '=');
+		skipWhiteSpace(input);
+		T value = expression(input);
+		eoln(input);
+		list.put(id, value);
+	}
+
+	T print_statement(Scanner input) throws APException {
 		T result;
-		identifier (input);
-		character (input, '=');
-		expression (input);
-		eoln (input);
+		character(input, '?');
+		skipWhiteSpace(input);
+		result = expression(input);
+		eoln(input);
 		return result;
 	}
-	
-	private void print_statement (Scanner input) throws APException {
-		character(input, '?');
-		expression(input);
-		eoln(input);
-//		printSet();	Needs to be created.
-	}
-	
-	private void comment (Scanner input) throws APException {
+
+	private void comment(Scanner input) throws APException {
 		character(input, '/');
 		eoln(input);
 	}
-	
-	
+
 	Identifier identifier(Scanner input) throws APException {
-		if (! nextCharIsLetter(input)) {
-			throw new APException ("Identifier does not start with a letter.");
+		if (!nextCharIsLetter(input)) {
+			throw new APException("Identifier does not start with a letter.");
 		}
 		Identifier result = new Identifier();
 		while (nextCharIsLetterOrNumber(input)) {
@@ -110,165 +130,200 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		}
 		return result;
 	}
-	
-	// expression = term { additive_operator term}
-	T expression (Scanner input) throws APException {
-		T result;
-		return result;
+
+// expression = term { additive_operator term}
+	T expression(Scanner input) throws APException {
+		// input = B + {4, 5, 6}
+		SetInterface<BigInteger> result = factor(input);
+		// if nextCharIs 'additive'
+		if (input.hasNext() && nextCharIsAdditive(input)) {
+			// Do we need to give the operator also to the result?
+			 result.add(term(input));
+		}
+		return (T) result;
 	}
-	
+
 //	term = factor {multiplicative_operator factor}	still needs to be created
-	
-	T factor (Scanner input) throws APException {
-		// still need to write this method
-		return null;
+
+	T term(Scanner input) throws APException {
+		// input = A * {4, 5, 6}
+		SetInterface<BigInteger> result = factor(input);
+		// if nextCharIs '*'
+		if (input.hasNext() && nextCharIs(input, '*')) {
+			// Do we need to give the operator also to the result?
+			character(input, '*');
+			 result.add(factor(input));
+		}
+		return (T) result;
 	}
 	
-	private T getIdentifier (Scanner input) {
-		// still need to write this method
-		return null;
+	T getIdentifier (Scanner input) {
+		Identifier id = new Identifier();
+		while (input.hasNext()) {
+			id.add(nextChar(input));
+		}
+		return list.get(id);
 	}
-	
-	SetInterface<T> factor (Scanner input) throws APException {
-		SetInterface<T> result = new Set<T>;
-		if (nextCharIsLetter(input)){
-//			result = getIdentifier(input);
+
+	T factor(Scanner input) throws APException {
+		SetInterface<BigInteger> result = new Set<BigInteger>();
+		if (nextCharIsLetter(input)) {
+			result = getIdentifier(input);
 		} else if (nextCharIs(input, '{')) {
 			result = new Set();
 			result.add(nextChar(input));
 		} else if (nextCharIs(input, '(')) {
 			result = complex_factor(input);
 		} else {
-			throw new APException ("Input is not a factor.");
+			throw new APException("Input is not a factor.");
 		}
-		return result;
+		return (T) result;
 	}
-	
-	
-	SetInterface<T> complex_factor(Scanner input) throws APException {
-		SetInterface<T> result = new Set<T>;
+
+	T complex_factor(Scanner input) throws APException {
+		SetInterface<BigInteger> result = new Set<BigInteger>();
 		character(input, '(');
-//		expression(input);
+		result.add(expression(input));
 		character(input, ')');
-		return result;
+		return (T) result;
 	}
-	
-	SetInterface<T> set (Scanner input) throws APException {
-		SetInterface<T> result = new Set<T>;
+
+	T set(Scanner input) throws APException {
+		SetInterface<BigInteger> result = new Set<BigInteger>();
 		character(input, '{');
-//		result.add(row_natural_numbers(input));
+		result.add(row_natural_numbers(input));
 		character(input, '}');
-		return result;
+		return (T) result;
 	}
-	
-	SetInterface<T> row_natural_numbers (Scanner input) throws APException {
-		SetInterface<T> result = new Set<T>;
+
+	T row_natural_numbers(Scanner input) throws APException {
+		SetInterface<BigInteger> result = new Set<BigInteger>();
 		result.add(natural_number(input));
 		while (nextCharIs(input, ',')) {
 			character(input, ',');
 			result.add(natural_number(input));
 		}
-		return result;
+		
+
+		return (T) result;
+
 	}
-	
-	
-	SetInterface<T> additive_operator (Scanner input) throws APException {
-		SetInterface<T> result = new Set<T>;
+
+	T additive_operator(Scanner input) throws APException {
+		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (nextCharIs(input, '+')) {
-//			result.union();
+			result = calculate('+');
 		} else if (nextCharIs(input, '|')) {
-//			result.symmetricDifference();
+			result = calculate('|');
 		} else if (nextCharIs(input, '-')) {
-//			result.difference();
+			result = calculate('-');
 		} else {
 			throw new APException("Input does not contain an additive operator");
 		}
-		return result;
-	}
-	
-	SetInterface<T> multiplicative_operator (Scanner input) throws APException {
-		character(input, '*');
-		SetInterface<T> set = new Set<T>;
-		// how can we perform the operation?
-//		result.intersection();
-		return set;
+		return (T) result;
 	}
 
-	BigInteger natural_number (Scanner input) throws APException {
-		// if input is i.e. 010, it will return 10. Is this outcome allowed?
-		String s = new String();
-		while(input.hasNext()) {
+	T multiplicative_operator(Scanner input) throws APException {
+		character(input, '*');
+		SetInterface<BigInteger> set = new Set<BigInteger>();
+		// how can we give the right sets in the calculate method?
+		set = calculate(set, set, '*');
+		return (T) set;
+	}
+
+	T calculate(SetInterface<BigInteger> set1, SetInterface<BigInteger> set2, char c) {
+		SetInterface<BigInteger> result = new Set<BigInteger>();
+		if (c == '+') {
+			result = set1.union(set2);
+		} else if (c == '|') {
+			result = set1.symmetricDifference(set2);
+		} else if (c == '-') {
+			result = set1.difference(set2);
+		} else if (c == '*') {
+			result = set1.intersection(set2);
+		}
+
+		return (T) result;
+	}
+
+	BigInteger natural_number(Scanner input) throws APException {
+		StringBuffer sb = new StringBuffer();
+		if (!nextCharIsNotZero(input)) {
+			throw new APException("natural_number can not start with 0");
+		}
+
+		while (input.hasNext() && !nextCharIs(input, ',')) {
+			if (nextCharIsWhiteSpace(input)) {
+				throw new APException("Spaces are not allowed in natural numbers.");
+			}
 			if (nextCharIsDigit(input)) {
-				s = s + input.next();
+				sb.append(input.next());
 			} else {
 				throw new APException("Input does not contain only numbers.");
 			}
 		}
-		return new BigInteger(s);
+		return new BigInteger(sb.toString());
 	}
-	
-	BigInteger positive_number (Scanner input) throws APException {
-		if (! nextCharIsNotZero(input)) {
+
+	BigInteger positive_number(Scanner input) throws APException {
+		if (!nextCharIsNotZero(input)) {
 			throw new APException("Character is not a positive number.");
 		}
-		String s = new String(input.next());
-		
-		while (! nextCharIsWhiteSpace(input) && input.hasNext()) {
-			s  = s + input.next();
+		StringBuffer sb = new StringBuffer(nextChar(input));
+
+		while (!nextCharIsWhiteSpace(input) && input.hasNext()) {
+			sb.append(nextChar(input));
 		}
-		
-		return new BigInteger(s);
-		
+
+		return new BigInteger(sb.toString());
+
 	}
-	
-	BigInteger number (Scanner input) {
+
+	BigInteger number(Scanner input) {
 		if (nextCharIs(input, '0')) {
 			return zero();
 		} else {
-			return not_zero(input.next());
+			return not_zero(input);
 		}
 	}
-	
-	BigInteger zero () {
+
+	BigInteger zero() {
 		return BigInteger.ZERO;
 	}
-	
-	BigInteger not_zero (String s) {
-		return new BigInteger(s);
+
+	BigInteger not_zero(Scanner input) {
+		StringBuffer sb = new StringBuffer(nextChar(input));
+		return new BigInteger(sb.toString());
 	}
-	
-	char Letter (char c) {
-		// seems a bit unnecessary if performed this way
-		return c;
-	}
-	
-	void eoln (Scanner input) throws APException {
+
+	void eoln(Scanner input) throws APException {
+		skipWhiteSpace(input);
 		if (input.hasNext()) {
 			throw new APException("Row still has items left, where eoln is expected.");
 		}
 	}
-	
-	void character (Scanner input, char c) throws APException {
-		if (! nextCharIs(input, c)) {
+
+	void character(Scanner input, char c) throws APException {
+		if (!nextCharIs(input, c)) {
 			String s = new String("Character does not contain ");
 			throw new APException(s + c);
 		}
 		nextChar(input);
 	}
-	
-	void test () {
+
+	void test() {
 		try {
-		out.printf("Give some input : ");
-		Scanner in = new Scanner(System.in);
-		Scanner row = new Scanner(in.nextLine());
-		row.useDelimiter("");
-		
-		out.println(set(row));
+			out.printf("Give some input : ");
+			Scanner in = new Scanner(System.in);
+			Scanner row = new Scanner(in.nextLine());
+			row.useDelimiter("");
+
+			out.println(row_natural_numbers(row));
 		} catch (APException e) {
 			out.println(e);
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		new Interpreter().test();
 	}
