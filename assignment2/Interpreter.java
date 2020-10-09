@@ -10,37 +10,38 @@ import java.util.regex.Pattern;
  */
 public class Interpreter<T extends SetInterface<BigInteger>> implements InterpreterInterface<T> {
 
+	// just for testing
 	PrintStream out;
 	
 	public Interpreter() {
 		out = new PrintStream(System.out);
 	}
 	
-	char nextChar(Scanner input) {
+	private char nextChar(Scanner input) {
 		return input.next().charAt(0);
 	}
 
-	boolean nextCharIs(Scanner in, char c) {
+	private boolean nextCharIs(Scanner in, char c) {
 		return in.hasNext(Pattern.quote(c + ""));
 	}
 
-	boolean nextCharIsDigit(Scanner in) {
+	private boolean nextCharIsDigit(Scanner in) {
 		return in.hasNext("[0-9]");
 	}
 	
-	boolean nextCharIsNotZero(Scanner in) {
+	private boolean nextCharIsNotZero(Scanner in) {
 		return in.hasNext("[1-9]");
 	}
 
-	boolean nextCharIsLetter(Scanner in) {
+	private boolean nextCharIsLetter(Scanner in) {
 		return in.hasNext("[a-zA-Z]");
 	}
 	
-	boolean nextCharIsWhiteSpace(Scanner in) {
+	private boolean nextCharIsWhiteSpace(Scanner in) {
 		return in.hasNext(" ");
 	}
 
-	boolean nextCharIsLetterOrNumber(Scanner in) {
+	private boolean nextCharIsLetterOrNumber(Scanner in) {
 		return nextCharIsDigit(in) && nextCharIsLetter(in);
 	}
 	
@@ -116,6 +117,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 //	term = factor {multiplicative_operator factor}	still needs to be created
 	
 	T factor (Scanner input) throws APException {
+		// still need to write this method
 		return null;
 	}
 	
@@ -190,7 +192,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	}
 
 	BigInteger natural_number (Scanner input) throws APException {
-		// is input is i.e. 010, it will return 10. Is this outcome allowed?
+		// if input is i.e. 010, it will return 10. Is this outcome allowed?
 		String s = new String();
 		while(input.hasNext()) {
 			if (nextCharIsDigit(input)) {
