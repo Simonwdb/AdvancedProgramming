@@ -117,7 +117,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	private void comment(Scanner input) throws APException {
 		character(input, '/');
-		eoln(input);
 	}
 
 	Identifier identifier(Scanner input) throws APException {
