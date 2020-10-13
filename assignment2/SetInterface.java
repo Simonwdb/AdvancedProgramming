@@ -8,14 +8,11 @@ package nl.vu.labs.phoenix.ap;
 /** @elements
  *    objects of type T
  *  @structure
- *    linear
+ *    None
  *  @domain
- *    The elements in the set are sorted monotonically increasing.
- *    All rows of elements of type T are valid values for a set.
- *    For every non-empty set the reference current is pointing to
- *    an element in the set.
+ *    The elements are unique and are of the same type.
  *  @constructor
- *    There is a default constructor that creates an empty set
+ *    There is a default constructor that creates an empty set.
  *  @precondition
  *    --
  *  @postcondition
@@ -38,7 +35,7 @@ public interface SetInterface<T extends Comparable<T>> {
 	boolean add(T t);
 	
     /** @precondition
-     *      The set is not empty.
+     *    The set is not empty.
      *  @postcondition
      *    The value of the current element has been returned.
      **/
@@ -77,28 +74,28 @@ public interface SetInterface<T extends Comparable<T>> {
      *  @postcondition
      *    Returned a set containing the elements in first set but not in second set.
      **/
-	Set difference (Set set1);
+	SetInterface<T> difference (SetInterface<T> set1);
 
     /** @precondition
      *    --
      *  @postcondition
      *    Returns a set containing the elements that contains in both sets.
      **/
-	Set intersection (Set set1);
+	SetInterface<T> intersection (SetInterface<T> set1);
 
     /** @precondition
      *    --
      *  @postcondition
-     *    Returns a set containing all elements of both sets. (N.B. sets do no contain duplicate elements)
+     *    Returns a set containing all elements of both sets.
      **/
-	Set union (Set set1);
+	SetInterface<T> union (SetInterface<T> set1);
 
     /** @precondition
      *    --
      *  @postcondition
      *    Returns a set containing all elements of both sets that are not contains in the intersection.
      **/
-	Set symmetricDifference (Set set1);
+	SetInterface<T> symmetricDifference (SetInterface<T> set1);
 
 	/* 
 	 * [4] Add anything else you think belongs to this interface 
@@ -119,5 +116,12 @@ public interface SetInterface<T extends Comparable<T>> {
      *     TRUE: set is empty.
      **/
 	boolean isEmpty ();
+	
+    /** @precondition
+     *      --
+     *  @postcondition
+     *    set is empty.
+     **/
+	void init();
 	
 }

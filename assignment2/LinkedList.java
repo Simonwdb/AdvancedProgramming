@@ -153,8 +153,6 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 			current = current.next;
 			if (current.data.compareTo(d) == 0) {
 				return true;
-			} else {
-				
 			}
 		}
 		return false;
@@ -168,10 +166,8 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		if (current.data.compareTo(d) == 0) {
 			return true;
 		} else if (current.data.compareTo(d) > 0) {
-			System.out.println("left");
 			findLeft(d);
 		} else {
-			System.out.println("right");
 			findRight(d);
 		}
 		

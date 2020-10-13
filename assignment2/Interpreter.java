@@ -13,7 +13,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	// just for testing
 	PrintStream out;
-	// maybe need to change list to a better name
 	HashMap<Identifier, T> map;
 
 	public Interpreter() {
@@ -88,7 +87,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		} else if (nextCharIs(input, '/')) {
 			comment(input);
 		} else {
-			throw new APException("Statement does not start with a assignment, print or comment");
+			throw new APException("Statement does not start with an assignment, print or comment");
 		}
 	}
 

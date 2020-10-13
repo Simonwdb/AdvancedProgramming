@@ -1,13 +1,16 @@
 package nl.vu.labs.phoenix.ap;
 
-import java.util.Objects;
 
 public class Identifier implements IdentifierInterface {
 	
-	StringBuffer sb;
+	private StringBuffer sb;
 	
 	public Identifier() {
 		init('a');
+	}
+	
+	public Identifier(char c) {
+		init(c);
 	}
 	
 	@Override
@@ -32,14 +35,15 @@ public class Identifier implements IdentifierInterface {
 	}
 	
 	public boolean equals(Object id) {
-		if (id == null || Objects.equals(id, sb)) {
+		if (id == null || id.getClass() != getClass()) {
 			return false;
 		}
-		return sb.toString().equals(id.toString());
+		Identifier i = (Identifier) id;
+		return sb.toString().equals(i.sb.toString());
 	}
 	
 	public int hashCode() {
-		return sb.hashCode();
+		return sb.toString().hashCode();
 	}
 
 }

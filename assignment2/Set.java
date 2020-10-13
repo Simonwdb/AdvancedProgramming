@@ -53,17 +53,21 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
 	@Override
 	public SetInterface<T> difference(SetInterface<T> set1) {
-		// TODO Auto-generated method stub
 		if (set1.isEmpty()) {
 			return new Set<T>();
 		} else if (isEmpty()) {
 			return set1;
 		} else {
-			SetInterface<T> result = new Set<T>();
-			// while set1 is not empty walk through each element
-			set1.get()
+			SetInterface<T> result = set1.copy();
+			while (! set1.isEmpty()) {
+				T temp = set1.get();
+				if (containsT(temp)) {
+					result.remove(temp);
+				}
+				set1.remove(temp);
+			}
+			return result;
 		}
-		return null;
 	}
 
 	@Override
@@ -71,9 +75,16 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 		if (set1.isEmpty() || isEmpty()) {
 			return new Set<T>();
 		} else {
-			
+			SetInterface<T> result = set1.copy();
+			while (! set1.isEmpty()) {
+				T temp = set1.get();
+				if (! containsT(temp)) {
+					result.remove(temp);
+				}
+				set1.remove(temp);
+			}
+			return result;
 		}
-		return null;
 	}
 
 	@Override

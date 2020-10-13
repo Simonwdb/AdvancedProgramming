@@ -7,7 +7,7 @@ Interpreter program (Scanner input) throws APException {
 }
 
 // statement = assignment | print_statement | comment ;
-Interpreter statement (Scanner input) throws APException {
+T statement (Scanner input) throws APException {
 	
 	if (nextCharIs(input, '=')) {
 		return assignment(input)
