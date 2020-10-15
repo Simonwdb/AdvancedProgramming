@@ -48,17 +48,17 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
 	@Override
 	public SetInterface<T> copy() {
+		SetInterface<T> copy = new Set<T>();
+		
 		if (isEmpty()) {
-			return new Set<T>();
+			return copy;
 		} else {
-			SetInterface<T> copy = new Set<T>();
 			list.goToFirst();
-			copy.add(get());	// in case if the list has only one element.
-			while (list.goToNext()) {
+			copy.add(get());
+			while(list.goToNext()) {
 				copy.add(get());
 			}
-			// do we need to reset the current to the first element in the original list?
-			list.goToFirst();
+//			list.goToFirst();	// this will cause a NullPointerException
 			return copy;
 		}
 	}
