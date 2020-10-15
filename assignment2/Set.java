@@ -48,13 +48,17 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
 	@Override
 	public SetInterface<T> copy() {
-		SetInterface<T> copy = new Set<T>();
-		while(! isEmpty()) {
-			T temp = get();
-			copy.add(temp);
-			remove(temp);
+		if (isEmpty()) {
+			return new Set<T>();
+		} else {
+			SetInterface<T> copy = new Set<T>();
+			list.goToFirst();
+			copy.add(get());	// in case if the list has only one element.
+			while (list.goToNext()) {
+				copy.add(get());
+			}
+			return copy;
 		}
-		return copy;
 	}
 
 	@Override
