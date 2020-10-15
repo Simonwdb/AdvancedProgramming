@@ -57,6 +57,8 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 			while (list.goToNext()) {
 				copy.add(get());
 			}
+			// do we need to reset the current to the first element in the original list?
+			list.goToFirst();
 			return copy;
 		}
 	}
