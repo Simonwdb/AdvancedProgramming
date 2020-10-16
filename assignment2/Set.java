@@ -71,12 +71,13 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 			return set1;
 		} else {
 			SetInterface<T> result = set1.copy();
-			while (! set1.isEmpty()) {
-				T temp = set1.get();
+			SetInterface<T> set1Copy = set1.copy();
+			while (! set1Copy.isEmpty()) { 
+				T temp = set1Copy.get();
 				if (containsT(temp)) {
 					result.remove(temp);
 				}
-				set1.remove(temp);
+				set1Copy.remove(temp);
 			}
 			return result;
 		}
@@ -88,12 +89,13 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 			return new Set<T>();
 		} else {
 			SetInterface<T> result = set1.copy();
-			while (! set1.isEmpty()) {
-				T temp = set1.get();
+			SetInterface<T> set1Copy = set1.copy();
+			while (! set1Copy.isEmpty()) {
+				T temp = set1Copy.get();
 				if (! containsT(temp)) {
 					result.remove(temp);
 				}
-				set1.remove(temp);
+				set1Copy.remove(temp);
 			}
 			return result;
 		}

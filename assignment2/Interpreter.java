@@ -67,13 +67,21 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	@Override
 	public T getMemory(String v) {
-		// TODO Implement me
-		return null;
+		Identifier id = new Identifier();
+		for (int i = 0; i < v.length(); i++) {
+			id.add(v.charAt(i));
+		}
+		return map.get(id);
 	}
 
 	@Override
 	public T eval(String s) {
-		// TODO Implement me
+		Scanner input = new Scanner(s);
+		try {
+			statement(input);
+		} catch (APException e) {
+			out.print(e);
+		}
 		return null;
 	}
 
@@ -129,7 +137,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		}
 		return result;
 	}
-	
+
 	T calculate(SetInterface<BigInteger> set1, char c, SetInterface<BigInteger> set2) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (c == '*') {
