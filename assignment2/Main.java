@@ -13,7 +13,10 @@ public class Main<T> {
 	}
 	
 	private void print(T obj) {
+		// example a = {1, 2}
 		out.println("Print statement");
+		out.println(obj); 	// will print something like nl.vu.labs.phoenix.ap.Set@......
+		// desired outcome is: 1, 2		(don't know how to get to the elements of obj)
 	}
 	
 	private void start() {
