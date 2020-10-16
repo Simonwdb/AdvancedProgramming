@@ -13,7 +13,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	// just for testing
 	PrintStream out;
-	HashMap<Identifier, T> map;
+	private HashMap<Identifier, T> map;
 
 	public Interpreter() {
 		out = new PrintStream(System.out);
@@ -77,26 +77,29 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	@Override
 	public T eval(String s) {
 		Scanner input = new Scanner(s);
+		input.useDelimiter("");
+		T result = null;
 		try {
-			statement(input);
+			result = statement(input);
 		} catch (APException e) {
-			out.print(e);
+			out.println(e);
 		}
-		return null;
+		return result;
 	}
 
-	private void statement(Scanner input) throws APException {
+	private T statement(Scanner input) throws APException {
 		skipWhiteSpace(input);
-
+		T result = null;
 		if (nextCharIsLetter(input)) {
 			assignment(input);
 		} else if (nextCharIs(input, '?')) {
-			print_statement(input);
+			result = print_statement(input);
 		} else if (nextCharIs(input, '/')) {
 			comment(input);
 		} else {
 			throw new APException("Statement does not start with an assignment, print or comment");
 		}
+		return result;
 	}
 
 	private void assignment(Scanner input) throws APException {
@@ -176,19 +179,11 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return (T) result;
 	}
 
-	T getIdentifier(Scanner input) {
-		Identifier id = new Identifier();
-		while (nextCharIsLetterOrNumber(input)) {
-			id.add(nextChar(input));
-		}
-		return map.get(id);
-	}
-
 	T factor(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (nextCharIsLetter(input)) {
-			result = getIdentifier(input);
+			result = map.get(identifier(input));
 		} else if (nextCharIs(input, '{')) {
 			result = set(input);
 		} else if (nextCharIs(input, '(')) {
@@ -210,9 +205,16 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	T set(Scanner input) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		character(input, '{');
-		result = row_natural_numbers(input);
-		character(input, '}');
-		return (T) result;
+		skipWhiteSpace(input);
+		if (nextCharIs(input, '}')) {
+			// catch empty sets
+			character(input, '}');
+			return (T) result;
+		} else {
+			result = row_natural_numbers(input);
+			character(input, '}');
+			return (T) result;
+		}
 	}
 
 	T row_natural_numbers(Scanner input) throws APException {

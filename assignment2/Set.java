@@ -18,6 +18,20 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 		list.init();
 	}
 	
+	public StringBuffer string() {
+		StringBuffer sb = new StringBuffer();
+		if (isEmpty()) {
+			return sb;
+		} else {
+			list.goToFirst();
+			sb.append(get().toString());
+			while(list.goToNext()) {
+				sb.append(get().toString());
+			}
+		}
+		return sb;
+	}
+	
 	@Override
 	public boolean add(T t) {
 		if (list.find(t)) {
@@ -58,7 +72,7 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 			while(list.goToNext()) {
 				copy.add(get());
 			}
-//			list.goToFirst();	// this will cause a NullPointerException
+			list.goToFirst();
 			return copy;
 		}
 	}
