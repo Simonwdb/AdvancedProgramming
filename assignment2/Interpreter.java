@@ -138,9 +138,9 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		while (nextCharIsLetterOrNumber(input)) {
 			result.add(nextChar(input));
 		}
-		if(nextCharIsWhiteSpace(input)) {
+		if (nextCharIsWhiteSpace(input)) {
 			skipWhiteSpace(input);
-			if(nextCharIsLetterOrNumber(input)) {
+			if (nextCharIsLetterOrNumber(input)) {
 				throw new APException("Identifier may not contain spaces");
 			}
 		}
@@ -212,7 +212,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		character(input, '{');
 		skipWhiteSpace(input);
-		if (nextCharIs(input, '}')) {	// catch empty sets
+		if (nextCharIs(input, '}')) { // catch empty sets
 			character(input, '}');
 			return (T) result;
 		} else {
@@ -235,7 +235,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			if (nextCharIsDigit(input)) {
 				result.add(natural_number(input));
 			} else {
-				
+
 			}
 		}
 
@@ -246,20 +246,20 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		StringBuffer sb = new StringBuffer();
 		skipWhiteSpace(input);
 		if (nextCharIs(input, '0')) {
-			sb.append(input.next());
-			if (!nextCharIs(input, '}')) {
-				throw new APException("Natural number can not start with 0");
-			}
+			handleZeros(input, sb);
 		} else if (!nextCharIsDigit(input)) {
 			findSign(input);
 		}
 		while (input.hasNext() && !nextCharIs(input, ',')) {
 			if (nextCharIsDigit(input)) {
 				sb.append(input.next());
-			} else if (nextCharIs(input, '}')) {
+			} else if(nextCharIsWhiteSpace(input)) {
+				skipWhiteSpace(input);
+			}
+			else if (nextCharIs(input, '}')) {
 				break;
 			} else {
-				throw new APException("Input does not contain only numbers.");
+				throw new APException("Set does not contain only numbers.");
 			}
 		}
 		return new BigInteger(sb.toString());
@@ -272,6 +272,14 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		if (nextCharIs(input, '+')) {
 			throw new APException("Natural number can not be signed");
 		}
+	}
+	
+	private StringBuffer handleZeros(Scanner input, StringBuffer sb) throws APException {
+		sb.append(input.next());
+		if (!nextCharIs(input, '}')) {
+			throw new APException("Natural number can not start with 0");
+		}
+		return sb;
 	}
 
 	BigInteger positive_number(Scanner input) throws APException {
