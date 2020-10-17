@@ -141,7 +141,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	private boolean findLeft(E d) {
 		while(current.prior != null && current.data.compareTo(d) >= 0){
 			current = current.prior;
-			if (current.data.compareTo(d) == 0 && current.prior.data.compareTo(d)!= 0) {
+			if (current.prior != null && current.data.compareTo(d) == 0 && current.prior.data.compareTo(d)!= 0 ) {
 				return true;
 			}
 		}

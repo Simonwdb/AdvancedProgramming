@@ -14,7 +14,6 @@ public class Main<T> {
 
 	private void print(SetInterface<BigInteger> result) {
 		result = result.copy();
-		out.println("Print statement");
 		while(!result.isEmpty()) {
 			BigInteger temp = result.get();
 			out.print(temp.toString() + " ");

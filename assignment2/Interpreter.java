@@ -90,7 +90,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	private T statement(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		T result = null;
-		if (nextCharIsLetter(input)) {
+		if (nextCharIsLetterOrNumber(input)) {
 			assignment(input);
 		} else if (nextCharIs(input, '?')) {
 			result = print_statement(input);
@@ -105,7 +105,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	private void assignment(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		Identifier id = new Identifier();
-		if (nextCharIsLetter(input)) {
+		if (nextCharIsLetterOrNumber(input)) {
 			id = identifier(input);
 		}
 		skipWhiteSpace(input);
@@ -133,10 +133,16 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		if (!nextCharIsLetter(input)) {
 			throw new APException("Identifier does not start with a letter.");
 		}
-		Identifier result = new Identifier(nextChar(input));
+		Identifier result = new Identifier();
 
 		while (nextCharIsLetterOrNumber(input)) {
 			result.add(nextChar(input));
+		}
+		if(nextCharIsWhiteSpace(input)) {
+			skipWhiteSpace(input);
+			if(nextCharIsLetterOrNumber(input)) {
+				throw new APException("Identifier may not contain spaces");
+			}
 		}
 		return result;
 	}
@@ -144,11 +150,11 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	T calculate(SetInterface<BigInteger> set1, char c, SetInterface<BigInteger> set2) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (c == '*') {
-			return (T) set1.intersection(set2);
+			return (T) set2.intersection(set1);
 		} else if (c == '+') {
-			return (T) set1.union(set2);
+			return (T) set2.union(set1);
 		} else if (c == '-') {
-			return (T) set1.difference(set2);
+			return (T) set2.difference(set1);
 		} else if (c == '|') {
 			return (T) set1.symmetricDifference(set2);
 		} else {
@@ -206,8 +212,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		character(input, '{');
 		skipWhiteSpace(input);
-		if (nextCharIs(input, '}')) {
-			// catch empty sets
+		if (nextCharIs(input, '}')) {	// catch empty sets
 			character(input, '}');
 			return (T) result;
 		} else {
@@ -219,25 +224,37 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	T row_natural_numbers(Scanner input) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
+		if (!nextCharIsDigit(input)) {
+			throw new APException("Row does not start with a number");
+		}
 		result.add(natural_number(input));
 		skipWhiteSpace(input);
 		while (nextCharIs(input, ',')) {
 			character(input, ',');
 			skipWhiteSpace(input);
-			result.add(natural_number(input));
+			if (nextCharIsDigit(input)) {
+				System.out.println("add2");
+				result.add(natural_number(input));
+			} else {
+				
+			}
 		}
+
 		return (T) result;
 	}
 
 	BigInteger natural_number(Scanner input) throws APException {
 		StringBuffer sb = new StringBuffer();
 		skipWhiteSpace(input);
-		if (!nextCharIsNotZero(input)) {
-			throw new APException("natural_number can not start with 0");
+		if (nextCharIs(input, '0')) {
+			sb.append(input.next());
+			if (!nextCharIs(input, '}')) {
+				throw new APException("Natural number can not start with 0");
+			}
+		} else if (!nextCharIsDigit(input)) {
+			findSign(input);
 		}
-
 		while (input.hasNext() && !nextCharIs(input, ',')) {
-			skipWhiteSpace(input);
 			if (nextCharIsDigit(input)) {
 				sb.append(input.next());
 			} else if (nextCharIs(input, '}')) {
@@ -247,6 +264,15 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			}
 		}
 		return new BigInteger(sb.toString());
+	}
+
+	private void findSign(Scanner input) throws APException {
+		if (nextCharIs(input, '-')) {
+			throw new APException("Natural number can not be negative");
+		}
+		if (nextCharIs(input, '+')) {
+			throw new APException("Natural number can not be signed");
+		}
 	}
 
 	BigInteger positive_number(Scanner input) throws APException {
