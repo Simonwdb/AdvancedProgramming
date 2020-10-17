@@ -150,16 +150,28 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	T calculate(SetInterface<BigInteger> set1, char c, SetInterface<BigInteger> set2) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (c == '*') {
-			return (T) set2.intersection(set1);
+			return (T) set1.intersection(set2);
 		} else if (c == '+') {
-			return (T) set2.union(set1);
+			return (T) set1.union(set2);
 		} else if (c == '-') {
-			return (T) set2.difference(set1);
+			return (T) set1.difference(set2);
 		} else if (c == '|') {
 			return (T) set1.symmetricDifference(set2);
 		} else {
 			throw new APException("wrong operater is given: " + c);
 		}
+	}
+	
+	void testSet(SetInterface<BigInteger> set) {
+		SetInterface<BigInteger> result = null;
+		result = set.copy();
+		out.printf("size of the set is : %d\n", result.size());
+		while(!result.isEmpty()) {
+			BigInteger temp = result.get();
+			out.print(temp.toString() + " ");
+			result.remove(temp);
+		}
+		out.println();
 	}
 
 // expression = term { additive_operator term}

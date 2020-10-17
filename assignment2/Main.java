@@ -14,11 +14,13 @@ public class Main<T> {
 
 	private void print(SetInterface<BigInteger> result) {
 		result = result.copy();
+		out.printf("size of the set is : %d\n", result.size());
 		while(!result.isEmpty()) {
 			BigInteger temp = result.get();
 			out.print(temp.toString() + " ");
 			result.remove(temp);
 		}
+		out.println();		// to create a new line in the interpreter
 	}
 
 	private void start() {
@@ -29,7 +31,6 @@ public class Main<T> {
 			if (result != null) {
 				print(result);
 			}
-			;
 		}
 
 

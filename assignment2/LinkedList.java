@@ -1,5 +1,7 @@
 package nl.vu.labs.phoenix.ap;
 
+import java.io.PrintStream;
+
 public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	private Node current;
@@ -7,6 +9,10 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	private Node tail;
 	private int numberOfElements;
 
+	// just for testing
+	PrintStream out = new PrintStream(System.out);
+	
+	
 	public LinkedList() {
 		this.current = null;
 		this.head = null;

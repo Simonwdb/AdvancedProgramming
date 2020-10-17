@@ -1,8 +1,13 @@
 package nl.vu.labs.phoenix.ap;
 
+import java.io.PrintStream;
+
 public class Set<T extends Comparable<T>> implements SetInterface<T> {
 	
 	private LinkedList<T> list;
+	
+	// for testing
+	PrintStream out = new PrintStream(System.out);
 	
 	public Set () {
 		list = new LinkedList<T>();
@@ -16,20 +21,6 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 	
 	public void init() {
 		list.init();
-	}
-	
-	public StringBuffer string() {
-		StringBuffer sb = new StringBuffer();
-		if (isEmpty()) {
-			return sb;
-		} else {
-			list.goToFirst();
-			sb.append(get().toString());
-			while(list.goToNext()) {
-				sb.append(get().toString());
-			}
-		}
-		return sb;
 	}
 	
 	@Override
@@ -84,15 +75,15 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 		} else if (isEmpty()) {
 			return set1;
 		} else {
-			SetInterface<T> result = set1.copy();
-			SetInterface<T> set1Copy = set1.copy();
-			while (! set1Copy.isEmpty()) { 
-				T temp = set1Copy.get();
-				if (containsT(temp)) {
-					result.remove(temp);
+			SetInterface<T> result = copy();
+			SetInterface<T> copySet = set1.copy();
+			
+			while (! copySet.isEmpty()) {
+				if (result.containsT(copySet.get())) { 		// in the containsT goes something wrong
+					result.remove(copySet.get());
 				}
-				set1Copy.remove(temp);
-			}
+				copySet.remove(copySet.get());
+			} 
 			return result;
 		}
 	}
@@ -155,6 +146,10 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 	@Override
 	public boolean isEmpty() {
 		return list.isEmpty();
+	}
+	
+	public void setToFirst() {
+		list.goToFirst();
 	}
 	
 
