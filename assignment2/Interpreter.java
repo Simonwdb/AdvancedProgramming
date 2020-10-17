@@ -233,7 +233,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			character(input, ',');
 			skipWhiteSpace(input);
 			if (nextCharIsDigit(input)) {
-				System.out.println("add2");
 				result.add(natural_number(input));
 			} else {
 				
