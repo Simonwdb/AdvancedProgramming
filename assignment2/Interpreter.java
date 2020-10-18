@@ -121,6 +121,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		character(input, '?');
 		skipWhiteSpace(input);
 		result = expression(input);
+		System.out.println("print EOLN");
 		eoln(input);
 		return result;
 	}
@@ -155,18 +156,19 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			return (T) set1.union(set2);
 		} else if (c == '-') {
 			return (T) set1.difference(set2);
+			// return (T) result;
 		} else if (c == '|') {
 			return (T) set1.symmetricDifference(set2);
 		} else {
 			throw new APException("wrong operater is given: " + c);
 		}
 	}
-	
+
 	void testSet(SetInterface<BigInteger> set) {
 		SetInterface<BigInteger> result = null;
 		result = set.copy();
 		out.printf("size of the set is : %d\n", result.size());
-		while(!result.isEmpty()) {
+		while (!result.isEmpty()) {
 			BigInteger temp = result.get();
 			out.print(temp.toString() + " ");
 			result.remove(temp);
@@ -174,7 +176,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		out.println();
 	}
 
-// expression = term { additive_operator term}
 	T expression(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		SetInterface<BigInteger> result = term(input);
@@ -184,8 +185,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		}
 		return (T) result;
 	}
-
-//	term = factor {multiplicative_operator factor}	still needs to be created
 
 	T term(Scanner input) throws APException {
 		skipWhiteSpace(input);
@@ -246,8 +245,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			skipWhiteSpace(input);
 			if (nextCharIsDigit(input)) {
 				result.add(natural_number(input));
-			} else {
-
 			}
 		}
 
@@ -262,17 +259,23 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		} else if (!nextCharIsDigit(input)) {
 			findSign(input);
 		}
-		while (input.hasNext() && !nextCharIs(input, ',')) {
-			if (nextCharIsDigit(input)) {
+		while (input.hasNext()) {
+			while (nextCharIsDigit(input)) {
 				sb.append(input.next());
-			} else if(nextCharIsWhiteSpace(input)) {
-				skipWhiteSpace(input);
+				System.out.println("appended");
 			}
-			else if (nextCharIs(input, '}')) {
+			if (nextCharIs(input, ',')) {
 				break;
-			} else {
-				throw new APException("Set does not contain only numbers.");
 			}
+			if (nextCharIsWhiteSpace(input)) {
+				skipWhiteSpace(input);
+				if (nextCharIs(input, '}') || nextCharIs(input, ',')) {
+					break;
+				} else if (nextCharIsDigit(input)) {
+					throw new APException("No spaces between digits of numbers allowed");
+				}
+			}
+			break;
 		}
 		return new BigInteger(sb.toString());
 	}
@@ -285,9 +288,10 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			throw new APException("Natural number can not be signed");
 		}
 	}
-	
+
 	private StringBuffer handleZeros(Scanner input, StringBuffer sb) throws APException {
 		sb.append(input.next());
+		skipWhiteSpace(input);
 		if (!nextCharIs(input, '}')) {
 			throw new APException("Natural number can not start with 0");
 		}

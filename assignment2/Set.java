@@ -3,26 +3,26 @@ package nl.vu.labs.phoenix.ap;
 import java.io.PrintStream;
 
 public class Set<T extends Comparable<T>> implements SetInterface<T> {
-	
+
 	private LinkedList<T> list;
-	
+
 	// for testing
 	PrintStream out = new PrintStream(System.out);
-	
-	public Set () {
+
+	public Set() {
 		list = new LinkedList<T>();
 		list.init();
 	}
-	
+
 	public Set(SetInterface<T> set1) {
 		list.init();
 		list = (LinkedList<T>) set1.copy();
 	}
-	
+
 	public void init() {
 		list.init();
 	}
-	
+
 	@Override
 	public boolean add(T t) {
 		if (list.find(t)) {
@@ -54,13 +54,12 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 	@Override
 	public SetInterface<T> copy() {
 		SetInterface<T> copy = new Set<T>();
-		
 		if (isEmpty()) {
 			return copy;
 		} else {
 			list.goToFirst();
 			copy.add(get());
-			while(list.goToNext()) {
+			while (list.goToNext()) {
 				copy.add(get());
 			}
 			list.goToFirst();
@@ -77,13 +76,13 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 		} else {
 			SetInterface<T> result = copy();
 			SetInterface<T> copySet = set1.copy();
-			
-			while (! copySet.isEmpty()) {
-				if (result.containsT(copySet.get())) { 		// in the containsT goes something wrong
+
+			while (!copySet.isEmpty()) {
+				if (result.containsT(copySet.get())) { // in the containsT goes something wrong
 					result.remove(copySet.get());
 				}
 				copySet.remove(copySet.get());
-			} 
+			}
 			return result;
 		}
 	}
@@ -95,9 +94,9 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 		} else {
 			SetInterface<T> result = set1.copy();
 			SetInterface<T> set1Copy = set1.copy();
-			while (! set1Copy.isEmpty()) {
+			while (!set1Copy.isEmpty()) {
 				T temp = set1Copy.get();
-				if (! containsT(temp)) {
+				if (!containsT(temp)) {
 					result.remove(temp);
 				}
 				set1Copy.remove(temp);
@@ -108,10 +107,14 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
 	@Override
 	public SetInterface<T> union(SetInterface<T> set1) {
-		SetInterface<T> result = difference(set1);
+		SetInterface<T> result = set1.copy();
 		list.goToFirst();
+		if (list.retrieve() != null) {
+			result.add(list.retrieve());
+		}
 		while (list.goToNext()) {
 			result.add(list.retrieve());
+			// result.add(get());
 		}
 		return result;
 	}
@@ -147,10 +150,9 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 	public boolean isEmpty() {
 		return list.isEmpty();
 	}
-	
+
 	public void setToFirst() {
 		list.goToFirst();
 	}
-	
 
 }

@@ -11,8 +11,7 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	// just for testing
 	PrintStream out = new PrintStream(System.out);
-	
-	
+
 	public LinkedList() {
 		this.current = null;
 		this.head = null;
@@ -145,17 +144,21 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	}
 
 	private boolean findLeft(E d) {
-		while(current.prior != null && current.data.compareTo(d) >= 0){
+		while (current.prior != null && current.data.compareTo(d) >= 0) {
 			current = current.prior;
-			if (current.prior != null && current.data.compareTo(d) == 0 && current.prior.data.compareTo(d)!= 0 ) {
+			while (current.prior != null && current.prior.data.compareTo(d) == 0) {
+				current = current.prior;
+			}
+			if (current.data.compareTo(d) == 0) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
 	private boolean findRight(E d) {
-		while(current.next != null && current.data.compareTo(d) < 0 ) {
+		while (current.next != null && current.data.compareTo(d) < 0) {
 			current = current.next;
 			if (current.data.compareTo(d) == 0) {
 				return true;
@@ -172,12 +175,10 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 		if (current.data.compareTo(d) == 0) {
 			return true;
 		} else if (current.data.compareTo(d) > 0) {
-			findLeft(d);
+			return findLeft(d);
 		} else {
-			findRight(d);
+			return findRight(d);
 		}
-		
-		return false;
 	}
 
 	@Override

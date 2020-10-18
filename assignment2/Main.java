@@ -13,7 +13,7 @@ public class Main<T> {
 	}
 
 	private void print(SetInterface<BigInteger> result) {
-		result = result.copy();
+		//result = result.copy();
 		out.printf("size of the set is : %d\n", result.size());
 		while(!result.isEmpty()) {
 			BigInteger temp = result.get();
