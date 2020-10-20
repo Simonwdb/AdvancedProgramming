@@ -273,7 +273,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		in.useDelimiter("");
 		if (! nextCharIsNotZero(in)) {
 			in.next();
-			if (in.hasNext() && nextCharIsDigit(in)) {
+			if (nextCharIsDigit(in)) {
 				throw new APException("Natural Number can not start with zero");
 			}
 		}
