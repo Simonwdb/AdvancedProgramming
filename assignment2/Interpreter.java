@@ -121,7 +121,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		character(input, '?');
 		skipWhiteSpace(input);
 		result = expression(input);
-		System.out.println("print EOLN");
 		eoln(input);
 		return result;
 	}
@@ -156,7 +155,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			return (T) set1.union(set2);
 		} else if (c == '-') {
 			return (T) set1.difference(set2);
-			// return (T) result;
 		} else if (c == '|') {
 			return (T) set1.symmetricDifference(set2);
 		} else {
@@ -164,24 +162,13 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		}
 	}
 
-	void testSet(SetInterface<BigInteger> set) {
-		SetInterface<BigInteger> result = null;
-		result = set.copy();
-		out.printf("size of the set is : %d\n", result.size());
-		while (!result.isEmpty()) {
-			BigInteger temp = result.get();
-			out.print(temp.toString() + " ");
-			result.remove(temp);
-		}
-		out.println();
-	}
-
 	T expression(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		SetInterface<BigInteger> result = term(input);
 		skipWhiteSpace(input);
-		if (nextCharIsAdditive(input)) {
+		while (nextCharIsAdditive(input)) {
 			result = calculate(result, nextChar(input), term(input));
+			skipWhiteSpace(input);
 		}
 		return (T) result;
 	}
@@ -190,8 +177,9 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		skipWhiteSpace(input);
 		SetInterface<BigInteger> result = factor(input);
 		skipWhiteSpace(input);
-		if (nextCharIs(input, '*')) {
+		while (nextCharIs(input, '*')) {
 			result = calculate(result, nextChar(input), factor(input));
+			skipWhiteSpace(input);
 		}
 		return (T) result;
 	}
@@ -262,7 +250,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		while (input.hasNext()) {
 			while (nextCharIsDigit(input)) {
 				sb.append(input.next());
-				System.out.println("appended");
 			}
 			if (nextCharIs(input, ',')) {
 				break;

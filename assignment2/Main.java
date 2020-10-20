@@ -13,12 +13,11 @@ public class Main<T> {
 	}
 
 	private void print(SetInterface<BigInteger> result) {
-		//result = result.copy();
-		out.printf("size of the set is : %d\n", result.size());
-		while(!result.isEmpty()) {
-			BigInteger temp = result.get();
-			out.print(temp.toString() + " ");
-			result.remove(temp);
+		SetInterface<BigInteger> copyResult = result.copy();
+		out.printf("size of the set is : %d\n", copyResult.size());
+		while(!copyResult.isEmpty()) {
+			out.printf("%d ", copyResult.get());
+			copyResult.remove(copyResult.get());
 		}
 		out.println();		// to create a new line in the interpreter
 	}
