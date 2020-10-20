@@ -85,7 +85,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			// need to change this, because in this class there can't be a PrintStream
 //			out.println(e);
 			// don't know if this will work
-			result = (T) e;
+			System.out.println(e);
 		}
 		return result;
 	}
@@ -241,10 +241,48 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 		return (T) result;
 	}
-
+	
+	private boolean startNaturalNumWithZero(StringBuffer sb) {
+		System.out.println("Checking in boolean for nat.number starting with 0");
+		Scanner in = new Scanner(sb.toString());
+		in.useDelimiter("");
+		if (! nextCharIsNotZero(in)) {
+			in.next();
+			if (nextCharIsDigit(in)) {
+				return true;
+			}
+		}
+		System.out.println("Boolean leaving with false");
+		return false;
+	}
+	
+	private StringBuffer testZero(Scanner input) throws APException {
+		StringBuffer sb = new StringBuffer();
+		if (! nextCharIsNotZero(input)) {
+			input.next();
+			if (nextCharIsDigit(input)) {
+				throw new APException("Natural number can not start with zero");
+			}
+			sb.append(nextChar(input));
+		}
+		return sb;
+	}
+	
+	private void checkNaturalNumber(StringBuffer sb) throws APException {
+		Scanner in = new Scanner(sb.toString());
+		in.useDelimiter("");
+		if (! nextCharIsNotZero(in)) {
+			in.next();
+			if (in.hasNext() && nextCharIsDigit(in)) {
+				throw new APException("Natural Number can not start with zero");
+			}
+		}
+	}
+	
 	BigInteger natural_number(Scanner input) throws APException {
 		StringBuffer sb = new StringBuffer();
 		skipWhiteSpace(input);
+		
 		while(input.hasNext()) {
 			if (nextCharIsDigit(input)) {
 				sb.append(nextChar(input));
@@ -257,6 +295,10 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 				}
 			}
 		}
+		
+		// check if Natural Number start with zero and has more numbers
+		checkNaturalNumber(sb);
+		
 		return new BigInteger(sb.toString());
 	}
 
