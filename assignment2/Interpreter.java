@@ -293,6 +293,8 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 				if (nextCharIsDigit(input)) {
 					throw new APException("no spaces allowed between natural numbers");
 				}
+			} else if (! nextCharIsDigit(input)) {
+				throw new APException("only numbers are allowed");
 			}
 		}
 		
