@@ -242,32 +242,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return (T) result;
 	}
 	
-	private boolean startNaturalNumWithZero(StringBuffer sb) {
-		System.out.println("Checking in boolean for nat.number starting with 0");
-		Scanner in = new Scanner(sb.toString());
-		in.useDelimiter("");
-		if (! nextCharIsNotZero(in)) {
-			in.next();
-			if (nextCharIsDigit(in)) {
-				return true;
-			}
-		}
-		System.out.println("Boolean leaving with false");
-		return false;
-	}
-	
-	private StringBuffer testZero(Scanner input) throws APException {
-		StringBuffer sb = new StringBuffer();
-		if (! nextCharIsNotZero(input)) {
-			input.next();
-			if (nextCharIsDigit(input)) {
-				throw new APException("Natural number can not start with zero");
-			}
-			sb.append(nextChar(input));
-		}
-		return sb;
-	}
-	
 	private void checkNaturalNumber(StringBuffer sb) throws APException {
 		Scanner in = new Scanner(sb.toString());
 		in.useDelimiter("");
