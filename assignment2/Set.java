@@ -115,7 +115,6 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 		}
 		while (list.goToNext()) {
 			result.add(list.retrieve());
-			// result.add(get());
 		}
 		return result;
 	}
