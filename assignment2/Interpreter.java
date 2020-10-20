@@ -286,7 +286,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		while(input.hasNext()) {
 			if (nextCharIsDigit(input)) {
 				sb.append(nextChar(input));
-			} else if (nextCharIs(input, ',') | nextCharIs(input, '}')) {
+			} else if (nextCharIs(input, ',') || nextCharIs(input, '}')) {
 				break;
 			} else if (nextCharIsWhiteSpace(input)) {
 				skipWhiteSpace(input);
