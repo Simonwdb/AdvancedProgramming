@@ -39,17 +39,23 @@ public class Test {
 		
 		
 		// Manual testing remove();
-		
 		list.insert(4);
-		list.insert(6);
-		list.insert(8);
-		list.insert(10);
-		
-		ListInterface<Integer> testList = list.copy();
-		testList.goToPrevious();
-		testList.goToPrevious();
-		testList.goToNext();
-		out.println(testList.retrieve());
+		list.insert(4);
+//		list.insert(4);
+//		list.insert(6);
+//		list.insert(8);
+//		list.insert(10);		
+		//ListInterface<Integer> testList = list.copy();
+//		System.out.println(list.find(4));
+//		System.out.println(list.retrieve());
+//		list.goToNext();
+//		System.out.println(list.retrieve());
+//		list.goToNext();
+//		System.out.println(list.retrieve());
+//		testList.goToPrevious();
+//		testList.goToPrevious();
+//		testList.goToNext();
+		//out.println(testList.retrieve());
 
 	}
 
@@ -58,3 +64,5 @@ public class Test {
 	}
 
 }
+
+

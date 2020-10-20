@@ -45,7 +45,8 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
 	@Override
 	public boolean isEmpty() {
-		return current == null;
+		return numberOfElements == 0;
+		//return current == null;
 	}
 
 	@Override

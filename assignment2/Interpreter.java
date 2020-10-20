@@ -83,7 +83,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			result = statement(input);
 		} catch (APException e) {
 			// need to change this, because in this class there can't be a PrintStream
-//			out.println(e);
+			// out.println(e);
 			// don't know if this will work
 			System.out.println(e);
 		}
@@ -241,23 +241,23 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 		return (T) result;
 	}
-	
+
 	private void checkNaturalNumber(StringBuffer sb) throws APException {
 		Scanner in = new Scanner(sb.toString());
 		in.useDelimiter("");
-		if (! nextCharIsNotZero(in)) {
+		if (!nextCharIsNotZero(in)) {
 			in.next();
 			if (nextCharIsDigit(in)) {
 				throw new APException("Natural Number can not start with zero");
 			}
 		}
 	}
-	
+
 	BigInteger natural_number(Scanner input) throws APException {
 		StringBuffer sb = new StringBuffer();
 		skipWhiteSpace(input);
-		
-		while(input.hasNext()) {
+
+		while (input.hasNext()) {
 			if (nextCharIsDigit(input)) {
 				sb.append(nextChar(input));
 			} else if (nextCharIs(input, ',') || nextCharIs(input, '}')) {
@@ -267,14 +267,14 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 				if (nextCharIsDigit(input)) {
 					throw new APException("no spaces allowed between natural numbers");
 				}
-			} else if (! nextCharIsDigit(input)) {
+			} else if (!nextCharIsDigit(input)) {
 				throw new APException("only numbers are allowed");
 			}
 		}
-		
+
 		// check if Natural Number start with zero and has more numbers
 		checkNaturalNumber(sb);
-		
+
 		return new BigInteger(sb.toString());
 	}
 
@@ -308,7 +308,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		StringBuffer sb = new StringBuffer(nextChar(input));
 		return new BigInteger(sb.toString());
 	}
-	
+
 // to this are the methods we are not currently using, shall we delete them?
 
 	void eoln(Scanner input) throws APException {

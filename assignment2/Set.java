@@ -1,6 +1,7 @@
 package nl.vu.labs.phoenix.ap;
 
 import java.io.PrintStream;
+import java.math.BigInteger;
 
 public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
@@ -69,16 +70,16 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
 	@Override
 	public SetInterface<T> difference(SetInterface<T> set1) {
+		SetInterface<T> result = copy();
+		SetInterface<T> copySet = set1.copy();
 		if (set1.isEmpty()) {
-			return new Set<T>();
+			return result;
 		} else if (isEmpty()) {
-			return set1;
+			return new Set<T>();
 		} else {
-			SetInterface<T> result = copy();
-			SetInterface<T> copySet = set1.copy();
 
 			while (!copySet.isEmpty()) {
-				if (result.containsT(copySet.get())) { // in the containsT goes something wrong
+				if (result.containsT(copySet.get())) {
 					result.remove(copySet.get());
 				}
 				copySet.remove(copySet.get());
@@ -121,7 +122,7 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
 	@Override
 	public SetInterface<T> symmetricDifference(SetInterface<T> set1) {
-		
+
 		if (set1.isEmpty()) {
 			return copy();
 		} else if (isEmpty()) {
@@ -129,8 +130,8 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 		} else {
 			SetInterface<T> result = copy();
 			SetInterface<T> copySet = set1.copy();
-			
-			while(! copySet.isEmpty()) {
+
+			while (!copySet.isEmpty()) {
 				if (containsT(copySet.get())) {
 					result.remove(copySet.get());
 				} else {
@@ -140,25 +141,6 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 			}
 			return result;
 		}
-		
-		
-		/*
-		SetInterface<T> temp = new Set<T>();
-		list.goToFirst();
-		while (list.goToNext()) {
-			temp.add(list.retrieve());
-		}
-		if (set1.isEmpty()) {
-			return temp;
-		} else if (isEmpty()) {
-			return set1;
-		} else {
-			SetInterface<T> diff1 = temp.difference(set1);
-			SetInterface<T> diff2 = set1.difference(temp);
-			SetInterface<T> symDiff = diff1.union(diff2);
-			return symDiff;
-		}
-		*/
 	}
 
 	@Override
