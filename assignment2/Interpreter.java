@@ -82,7 +82,10 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		try {
 			result = statement(input);
 		} catch (APException e) {
-			out.println(e);
+			// need to change this, because in this class there can't be a PrintStream
+//			out.println(e);
+			// don't know if this will work
+			result = (T) e;
 		}
 		return result;
 	}
@@ -242,48 +245,22 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	BigInteger natural_number(Scanner input) throws APException {
 		StringBuffer sb = new StringBuffer();
 		skipWhiteSpace(input);
-		if (nextCharIs(input, '0')) {
-			handleZeros(input, sb);
-		} else if (!nextCharIsDigit(input)) {
-			findSign(input);
-		}
-		while (input.hasNext()) {
-			while (nextCharIsDigit(input)) {
-				sb.append(input.next());
-			}
-			if (nextCharIs(input, ',')) {
+		while(input.hasNext()) {
+			if (nextCharIsDigit(input)) {
+				sb.append(nextChar(input));
+			} else if (nextCharIs(input, ',') | nextCharIs(input, '}')) {
 				break;
-			}
-			if (nextCharIsWhiteSpace(input)) {
+			} else if (nextCharIsWhiteSpace(input)) {
 				skipWhiteSpace(input);
-				if (nextCharIs(input, '}') || nextCharIs(input, ',')) {
-					break;
-				} else if (nextCharIsDigit(input)) {
-					throw new APException("No spaces between digits of numbers allowed");
+				if (nextCharIsDigit(input)) {
+					throw new APException("no spaces allowed between natural numbers");
 				}
 			}
-			break;
 		}
 		return new BigInteger(sb.toString());
 	}
 
-	private void findSign(Scanner input) throws APException {
-		if (nextCharIs(input, '-')) {
-			throw new APException("Natural number can not be negative");
-		}
-		if (nextCharIs(input, '+')) {
-			throw new APException("Natural number can not be signed");
-		}
-	}
-
-	private StringBuffer handleZeros(Scanner input, StringBuffer sb) throws APException {
-		sb.append(input.next());
-		skipWhiteSpace(input);
-		if (!nextCharIs(input, '}')) {
-			throw new APException("Natural number can not start with 0");
-		}
-		return sb;
-	}
+// from this
 
 	BigInteger positive_number(Scanner input) throws APException {
 		if (!nextCharIsNotZero(input)) {
@@ -313,6 +290,8 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		StringBuffer sb = new StringBuffer(nextChar(input));
 		return new BigInteger(sb.toString());
 	}
+	
+// to this are the methods we are not currently using, shall we delete them?
 
 	void eoln(Scanner input) throws APException {
 		skipWhiteSpace(input);
@@ -328,22 +307,4 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		}
 		nextChar(input);
 	}
-
-	void test() {
-		try {
-			out.printf("Give some input : ");
-			Scanner in = new Scanner(System.in);
-			Scanner row = new Scanner(in.nextLine());
-			row.useDelimiter("");
-			statement(row);
-			out.println(" ");
-		} catch (APException e) {
-			out.println(e);
-		}
-	}
-
-	public static void main(String[] args) {
-		new Interpreter().test();
-	}
-
 }
