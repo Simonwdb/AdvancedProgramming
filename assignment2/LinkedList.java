@@ -130,10 +130,12 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 			// remove if current-PRE is last element of list-PRE
 			current.prior.next = null;
 			goToPrevious();
+			tail =current;
 		} else if (current.prior == null) {
 			// remove if current-PRE is first element of list-PRE
 			current.next.prior = null;
 			goToNext();
+			head=current;
 		} else {
 			// remove if current-PRE is "in the middle" of list-PRE
 			current.prior.next = current.next;

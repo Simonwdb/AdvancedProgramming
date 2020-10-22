@@ -14,8 +14,6 @@ public class Main<T> {
 
 	private void print(SetInterface<BigInteger> result) {
 		SetInterface<BigInteger> copyResult = result.copy();
-		System.out.println("size copy " + copyResult.size());
-		System.out.println("size result " + result.size());
 		while(!copyResult.isEmpty()) {
 			out.printf("%d ", copyResult.get());
 			copyResult.remove(copyResult.get());
