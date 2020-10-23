@@ -1,6 +1,5 @@
 package nl.vu.labs.phoenix.ap;
 
-import java.io.PrintStream;
 
 public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 
@@ -8,9 +7,6 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	private Node head;
 	private Node tail;
 	private int numberOfElements;
-
-	// just for testing
-	PrintStream out = new PrintStream(System.out);
 
 	public LinkedList() {
 		this.current = null;
@@ -46,7 +42,6 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 	@Override
 	public boolean isEmpty() {
 		return numberOfElements == 0;
-		//return current == null;
 	}
 
 	@Override
@@ -156,7 +151,6 @@ public class LinkedList<E extends Comparable<E>> implements ListInterface<E> {
 				return true;
 			}
 		}
-
 		return false;
 	}
 

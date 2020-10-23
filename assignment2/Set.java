@@ -1,14 +1,8 @@
 package nl.vu.labs.phoenix.ap;
 
-import java.io.PrintStream;
-import java.math.BigInteger;
-
 public class Set<T extends Comparable<T>> implements SetInterface<T> {
 
 	private LinkedList<T> list;
-
-	// for testing
-	PrintStream out = new PrintStream(System.out);
 
 	public Set() {
 		list = new LinkedList<T>();
@@ -158,5 +152,4 @@ public class Set<T extends Comparable<T>> implements SetInterface<T> {
 	public void setToFirst() {
 		list.goToFirst();
 	}
-
 }

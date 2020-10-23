@@ -6,13 +6,9 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-/**
- * A set interpreter for sets of elements of type T
- */
 public class Interpreter<T extends SetInterface<BigInteger>> implements InterpreterInterface<T> {
 
-	// just for testing
-	PrintStream out;
+	private PrintStream out;
 	private HashMap<Identifier, T> map;
 
 	public Interpreter() {
@@ -30,10 +26,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	private boolean nextCharIsDigit(Scanner in) {
 		return in.hasNext("[0-9]");
-	}
-
-	private boolean nextCharIsPositive(Scanner in) {
-		return in.hasNext("[1-9]");
 	}
 
 	private boolean nextCharIsLetter(Scanner in) {
@@ -82,10 +74,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		try {
 			result = statement(input);
 		} catch (APException e) {
-			// need to change this, because in this class there can't be a PrintStream
-			// out.println(e);
-			// don't know if this will work
-			System.out.println(e);
+			 out.println(e);
 		}
 		return result;
 	}
@@ -112,27 +101,27 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			id = identifier(input);
 		}
 		skipWhiteSpace(input);
-		character(input, '=');
+		checkCharacter(input, '=');
 		skipWhiteSpace(input);
 		T value = expression(input);
-		eoln(input);
+		checkEoln(input);
 		map.put(id, value);
 	}
 
 	T print_statement(Scanner input) throws APException {
 		T result;
-		character(input, '?');
+		checkCharacter(input, '?');
 		skipWhiteSpace(input);
 		result = expression(input);
-		eoln(input);
+		checkEoln(input);
 		return result;
 	}
 
 	private void comment(Scanner input) throws APException {
-		character(input, '/');
+		checkCharacter(input, '/');
 	}
 
-	Identifier identifier(Scanner input) throws APException {
+	private Identifier identifier(Scanner input) throws APException {
 		if (!nextCharIsLetter(input)) {
 			throw new APException("Identifier does not start with a letter.");
 		}
@@ -150,7 +139,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return result;
 	}
 
-	T calculate(SetInterface<BigInteger> set1, char c, SetInterface<BigInteger> set2) throws APException {
+	private T calculate(SetInterface<BigInteger> set1, char c, SetInterface<BigInteger> set2) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (c == '*') {
 			return (T) set1.intersection(set2);
@@ -165,7 +154,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		}
 	}
 
-	T expression(Scanner input) throws APException {
+	private T expression(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		SetInterface<BigInteger> result = term(input);
 		skipWhiteSpace(input);
@@ -176,7 +165,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return (T) result;
 	}
 
-	T term(Scanner input) throws APException {
+	private T term(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		SetInterface<BigInteger> result = factor(input);
 		skipWhiteSpace(input);
@@ -187,7 +176,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return (T) result;
 	}
 
-	T factor(Scanner input) throws APException {
+	private T factor(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (nextCharIsLetter(input)) {
@@ -202,29 +191,29 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return (T) result;
 	}
 
-	T complex_factor(Scanner input) throws APException {
+	private T complex_factor(Scanner input) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
-		character(input, '(');
+		checkCharacter(input, '(');
 		result = (expression(input));
-		character(input, ')');
+		checkCharacter(input, ')');
 		return (T) result;
 	}
 
-	T set(Scanner input) throws APException {
+	private T set(Scanner input) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
-		character(input, '{');
+		checkCharacter(input, '{');
 		skipWhiteSpace(input);
 		if (nextCharIs(input, '}')) { // catch empty sets
-			character(input, '}');
+			checkCharacter(input, '}');
 			return (T) result;
 		} else {
 			result = row_natural_numbers(input);
-			character(input, '}');
+			checkCharacter(input, '}');
 			return (T) result;
 		}
 	}
 
-	T row_natural_numbers(Scanner input) throws APException {
+	private T row_natural_numbers(Scanner input) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (!nextCharIsDigit(input)) {
 			throw new APException("Row does not start with a number");
@@ -232,7 +221,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		result.add(natural_number(input));
 		skipWhiteSpace(input);
 		while (nextCharIs(input, ',')) {
-			character(input, ',');
+			checkCharacter(input, ',');
 			skipWhiteSpace(input);
 			if (nextCharIsDigit(input)) {
 				result.add(natural_number(input));
@@ -242,20 +231,13 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return (T) result;
 	}
 
-	BigInteger natural_number(Scanner input) throws APException {
+	private BigInteger natural_number(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		return number(input);
-//		if (nextCharIs(input, '0')) {
-//			return zero(input);
-//		} else if (nextCharIsPositive(input)) {
-//			return positive_number(input);
-//		} else {
-//			throw new APException("invalid natural number");
-//		}
 	}
 
 
-	BigInteger positive_number(Scanner input) throws APException {
+	private BigInteger positive_number(Scanner input) throws APException {
 		StringBuffer sb = new StringBuffer();
 		while (nextCharIsDigit(input)) {
 			sb.append(nextChar(input));
@@ -269,7 +251,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return new BigInteger(sb.toString());
 	}
 
-	BigInteger number(Scanner input) throws APException {
+	private BigInteger number(Scanner input) throws APException {
 		if (nextCharIs(input, '0')) {
 			return zero(input);
 		} else if (nextCharIsDigit(input)) {
@@ -279,7 +261,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		}
 	}
 
-	BigInteger zero(Scanner input) throws APException {
+	private BigInteger zero(Scanner input) throws APException {
 		input.next(); 
 		skipWhiteSpace(input);
 		if (nextCharIsDigit(input)) {
@@ -288,22 +270,15 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 			return BigInteger.ZERO;
 		}
 	}
-
-	StringBuffer not_zero(Scanner input) {
-		StringBuffer sb = new StringBuffer(nextChar(input));
-		return sb;
-	}
-
-// to this are the methods we are not currently using, shall we delete them?
-
-	void eoln(Scanner input) throws APException {
+	
+	private void checkEoln(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		if (input.hasNext()) {
 			throw new APException("Row still has items left, where eoln is expected.");
 		}
 	}
 
-	void character(Scanner input, char c) throws APException {
+	private void checkCharacter(Scanner input, char c) throws APException {
 		if (!nextCharIs(input, c)) {
 			String s = new String("Character does not contain ");
 			throw new APException(s + c);
