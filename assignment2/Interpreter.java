@@ -74,7 +74,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		try {
 			result = statement(input);
 		} catch (APException e) {
-			 out.println(e);
+			out.println(e);
 		}
 		return result;
 	}
@@ -150,7 +150,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		} else if (c == '|') {
 			return (T) set1.symmetricDifference(set2);
 		} else {
-			throw new APException("wrong operater is given: " + c);
+			throw new APException("Wrong operater is given: " + c);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 	private T row_natural_numbers(Scanner input) throws APException {
 		SetInterface<BigInteger> result = new Set<BigInteger>();
 		if (!nextCharIsDigit(input)) {
-			throw new APException("Row does not start with a number");
+			handleNonDigits(input);
 		}
 		result.add(natural_number(input));
 		skipWhiteSpace(input);
@@ -236,7 +236,6 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		return number(input);
 	}
 
-
 	private BigInteger positive_number(Scanner input) throws APException {
 		StringBuffer sb = new StringBuffer();
 		while (nextCharIsDigit(input)) {
@@ -245,7 +244,7 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		if (nextCharIsWhiteSpace(input)) {
 			skipWhiteSpace(input);
 			if (nextCharIsDigit(input)) {
-				throw new APException("no spaces allowed between digits of natural numbers");
+				throw new APException("No spaces allowed between digits of natural numbers");
 			}
 		}
 		return new BigInteger(sb.toString());
@@ -257,20 +256,31 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 		} else if (nextCharIsDigit(input)) {
 			return positive_number(input);
 		} else {
-			throw new APException("input does not contain only numbers");
+			throw new APException("Input does not contain only numbers");
 		}
 	}
 
 	private BigInteger zero(Scanner input) throws APException {
-		input.next(); 
+		input.next();
 		skipWhiteSpace(input);
 		if (nextCharIsDigit(input)) {
-			throw new APException("natural number can not start with 0");
+			throw new APException("Natural number can not start with 0");
 		} else {
 			return BigInteger.ZERO;
 		}
 	}
-	
+
+	private void handleNonDigits(Scanner input) throws APException {
+		if (nextCharIs(input, '-')) {
+			throw new APException("Natural number can not be negative");
+		}
+		if (nextCharIs(input, '+')) {
+			throw new APException("Natural number can not be signed");
+		} else {
+			throw new APException("Natural number does not start with a number");
+		}
+	}
+
 	private void checkEoln(Scanner input) throws APException {
 		skipWhiteSpace(input);
 		if (input.hasNext()) {
@@ -280,8 +290,14 @@ public class Interpreter<T extends SetInterface<BigInteger>> implements Interpre
 
 	private void checkCharacter(Scanner input, char c) throws APException {
 		if (!nextCharIs(input, c)) {
-			String s = new String("Character does not contain ");
-			throw new APException(s + c);
+			if (c == '{') {
+				throw new APException("Set does not start with '{'");
+			} else if (c == '}') {
+				throw new APException("Set does not end with '}'");
+			} else {
+				String s = new String("Character does not contain ");
+				throw new APException(s + c);
+			}
 		}
 		nextChar(input);
 	}
